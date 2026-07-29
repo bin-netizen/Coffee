@@ -1,0 +1,242 @@
+<style>
+  .hero-fade { animation: heroFade 1s ease both; }
+  .hero-fade-delay-1 { animation: heroFade 1s ease 0.25s both; }
+  .hero-fade-delay-2 { animation: heroFade 1s ease 0.5s both; }
+  @keyframes heroFade {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    animation: fadeUp 0.8s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .product-card {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .product-card:hover {
+    transform: scale(1.04) translateY(-6px);
+    box-shadow: 0 20px 35px rgba(75, 46, 46, 0.25);
+  }
+
+  .cta-btn {
+    transition: all 0.3s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(75, 46, 46, 0.35);
+  }
+
+  .feature-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(75, 46, 46, 0.2);
+  }
+</style>
+
+<!-- ============ HERO SECTION ============ -->
+<section
+  class="relative h-screen flex items-center justify-center text-center bg-cover bg-center"
+  style="background-image: url('/img/home.png');"
+>
+  <div class="absolute inset-0 bg-gradient-to-b from-brown/70 via-brown/50 to-brown/80"></div>
+  <div class="relative z-10 px-4 max-w-3xl">
+    <h1 class="hero-fade font-heading text-5xl md:text-6xl lg:text-7xl font-bold text-cream mb-6 drop-shadow-lg">
+      Welcome to CoffeeWeb ☕
+    </h1>
+    <p class="hero-fade-delay-1 text-cream/90 text-lg md:text-xl font-light tracking-wide mb-10">
+      Enjoy premium coffee crafted with passion
+    </p>
+    <a
+      href="/menu"
+      class="hero-fade-delay-2 cta-btn inline-block bg-accent text-brown font-semibold px-8 py-3.5 rounded-full shadow-lg hover:bg-cream transition-all duration-300"
+    >
+      Explore Menu
+    </a>
+  </div>
+</section>
+
+<!-- ============ FEATURED SECTION ============ -->
+<section class="bg-cream py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <span class="text-accent font-semibold tracking-widest uppercase text-sm">Our Selection</span>
+      <h2 class="font-heading text-4xl md:text-5xl font-bold text-brown mt-3">Our Featured Coffees</h2>
+      <div class="w-20 h-1 bg-accent mx-auto mt-5 rounded-full"></div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg">
+        <div class="overflow-hidden">
+          <img src="/img/latte.png" alt="Espresso" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-5 text-center">
+          <h3 class="font-heading text-xl font-semibold mb-1">Espresso</h3>
+          <span class="text-accent font-bold text-lg">$3.00</span>
+        </div>
+      </div>
+
+      <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg">
+        <div class="overflow-hidden">
+          <img src="/img/latte.png" alt="Latte" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-5 text-center">
+          <h3 class="font-heading text-xl font-semibold mb-1">Latte</h3>
+          <span class="text-accent font-bold text-lg">$4.00</span>
+        </div>
+      </div>
+
+      <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg">
+        <div class="overflow-hidden">
+          <img src="/img/latte.png" alt="Cappuccino" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-5 text-center">
+          <h3 class="font-heading text-xl font-semibold mb-1">Cappuccino</h3>
+          <span class="text-accent font-bold text-lg">$4.50</span>
+        </div>
+      </div>
+
+      <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg">
+        <div class="overflow-hidden">
+          <img src="/img/latte.png" alt="Mocha" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-5 text-center">
+          <h3 class="font-heading text-xl font-semibold mb-1">Mocha</h3>
+          <span class="text-accent font-bold text-lg">$4.80</span>
+        </div>
+      </div>
+
+      <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg">
+        <div class="overflow-hidden">
+          <img src="/img/latte.png" alt="Americano" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-5 text-center">
+          <h3 class="font-heading text-xl font-semibold mb-1">Americano</h3>
+          <span class="text-accent font-bold text-lg">$3.50</span>
+        </div>
+      </div>
+
+      <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg">
+        <div class="overflow-hidden">
+          <img src="/img/latte.png" alt="Caramel Macchiato" class="w-full h-56 object-cover" />
+        </div>
+        <div class="p-5 text-center">
+          <h3 class="font-heading text-xl font-semibold mb-1">Caramel Macchiato</h3>
+          <span class="text-accent font-bold text-lg">$5.00</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY CHOOSE US ============ -->
+<section class="bg-brown text-cream py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <span class="text-accent font-semibold tracking-widest uppercase text-sm">Our Promise</span>
+      <h2 class="font-heading text-4xl md:text-5xl font-bold mt-3">Why Choose Us</h2>
+      <div class="w-20 h-1 bg-accent mx-auto mt-5 rounded-full"></div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+
+      <div class="feature-card bg-cream/5 border border-cream/10 rounded-2xl p-8">
+        <div class="w-16 h-16 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18M8 17l3-4 3 3 5-6" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2">High Quality Beans</h3>
+        <p class="text-cream/70 text-sm leading-relaxed">Sourced from the finest farms around the world for a rich, authentic flavor.</p>
+      </div>
+
+      <div class="feature-card bg-cream/5 border border-cream/10 rounded-2xl p-8">
+        <div class="w-16 h-16 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2">Cozy Atmosphere</h3>
+        <p class="text-cream/70 text-sm leading-relaxed">A warm and relaxing space designed for you to unwind and enjoy every moment.</p>
+      </div>
+
+      <div class="feature-card bg-cream/5 border border-cream/10 rounded-2xl p-8">
+        <div class="w-16 h-16 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.5a7.5 7.5 0 100 15 7.5 7.5 0 000-15zM12 8v4l3 3" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2">Skilled Barista</h3>
+        <p class="text-cream/70 text-sm leading-relaxed">Our expert baristas craft every cup with precision, care, and passion.</p>
+      </div>
+
+      <div class="feature-card bg-cream/5 border border-cream/10 rounded-2xl p-8">
+        <div class="w-16 h-16 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2">Fast Service</h3>
+        <p class="text-cream/70 text-sm leading-relaxed">Quick and friendly service so you can enjoy your coffee without the wait.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT PREVIEW ============ -->
+<section class="bg-cream py-20 px-6">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div class="fade-up rounded-2xl overflow-hidden shadow-xl">
+      <img src="/img/home.png" alt="About CoffeeWeb" class="w-full h-[400px] object-cover" />
+    </div>
+    <div class="fade-up">
+      <span class="text-accent font-semibold tracking-widest uppercase text-sm">Our Story</span>
+      <h2 class="font-heading text-4xl font-bold text-brown mt-3 mb-6">More Than Just Coffee</h2>
+      <p class="text-brown/80 leading-relaxed mb-4">
+        At CoffeeWeb, every cup tells a story. We believe great coffee is more than a drink,
+        it's an experience shared with friends, family, and the moments in between.
+      </p>
+      <p class="text-brown/80 leading-relaxed mb-8">
+        From bean to cup, we carefully craft each order to bring you the finest quality
+        in a warm, welcoming space you'll want to return to again and again.
+      </p>
+      <a
+        href="/about"
+        class="cta-btn inline-block bg-brown text-cream font-semibold px-8 py-3.5 rounded-full shadow-lg hover:bg-accent hover:text-brown transition-all duration-300"
+      >
+        Read More
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CALL TO ACTION ============ -->
+<section
+  class="relative py-24 px-6 text-center bg-cover bg-center"
+  style="background-image: url('/img/home.png');"
+>
+  <div class="absolute inset-0 bg-brown/80"></div>
+  <div class="relative z-10 max-w-2xl mx-auto fade-up">
+    <h2 class="font-heading text-4xl md:text-5xl font-bold text-cream mb-6">
+      Visit our shop today
+    </h2>
+    <p class="text-cream/80 text-lg mb-10">
+      Step in, sit back, and let us serve you the perfect cup of coffee.
+    </p>
+    <a
+      href="/menu"
+      class="cta-btn inline-block bg-accent text-brown font-semibold px-10 py-4 rounded-full shadow-lg hover:bg-cream transition-all duration-300 text-lg"
+    >
+      Order Now
+    </a>
+  </div>
+</section>

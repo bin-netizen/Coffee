@@ -1,0 +1,365 @@
+<style>
+  .fade-up { animation: fadeUp 0.8s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  .cart-row { transition: background-color 0.25s ease; }
+  .cart-row:hover { background-color: rgba(200, 162, 122, 0.08); }
+  .qty-btn { transition: all 0.25s ease; }
+  .qty-btn:hover { background-color: #4b2e2e; color: #D4CCB2; }
+  .remove-btn { transition: all 0.25s ease; }
+  .remove-btn:hover { color: #b91c1c; transform: scale(1.1); }
+  .checkout-btn, .cta-btn { transition: all 0.3s ease; }
+  .checkout-btn:hover, .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(75, 46, 46, 0.35); }
+  .auth-input { transition: all 0.3s ease; }
+  .auth-input:focus { outline: none; border-color: #c8a27a; box-shadow: 0 0 0 3px rgba(200, 162, 122, 0.25); }
+</style>
+
+<!-- ============ HERO SECTION ============ -->
+<section class="relative h-[35vh] md:h-[40vh] flex items-center justify-center text-center bg-cover bg-center" style="background-image: url('/img/home.png');">
+  <div class="absolute inset-0 bg-brown/75"></div>
+  <div class="relative z-10 px-4 fade-up">
+    <h1 class="font-heading text-4xl md:text-5xl font-bold text-cream mb-3 drop-shadow-lg">Giỏ hàng của bạn</h1>
+    <p class="text-cream/90 text-base md:text-lg font-light tracking-wide">Kiểm tra lại đơn hàng trước khi thanh toán</p>
+  </div>
+</section>
+
+<!-- ============ CART CONTENT ============ -->
+<section class="bg-cream py-16 px-6">
+  <div class="max-w-6xl mx-auto">
+
+    {{#unless isEmpty}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10" id="cartContent">
+
+      <!-- Cart Table -->
+      <div class="lg:col-span-2 bg-white/70 rounded-2xl shadow-lg overflow-hidden fade-up">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="bg-brown text-cream text-sm uppercase tracking-wide">
+                <th class="px-6 py-4 font-medium">Sản phẩm</th>
+                <th class="px-6 py-4 font-medium text-center">Giá</th>
+                <th class="px-6 py-4 font-medium text-center">Số lượng</th>
+                <th class="px-6 py-4 font-medium text-center">Tổng</th>
+                <th class="px-6 py-4 font-medium text-center"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-brown/10" id="cartBody">
+              {{#each cartItems}}
+              <tr class="cart-row" data-id="{{this.productId}}" data-price="{{this.price}}">
+                <td class="px-6 py-5">
+                  <div class="flex items-center gap-4">
+                    <img src="/img/latte.png" alt="{{this.name}}" class="w-16 h-16 rounded-lg object-cover" />
+                    <span class="font-heading font-semibold text-brown">{{this.name}}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-5 text-center text-brown/80">${{this.price}}</td>
+                <td class="px-6 py-5">
+                  <div class="flex items-center justify-center gap-3">
+                    <button class="qty-btn qty-decrease w-8 h-8 flex items-center justify-center rounded-full border border-brown text-brown font-bold" type="button">−</button>
+                    <span class="qty-value w-6 text-center font-medium text-brown">{{this.quantity}}</span>
+                    <button class="qty-btn qty-increase w-8 h-8 flex items-center justify-center rounded-full border border-brown text-brown font-bold" type="button">+</button>
+                  </div>
+                </td>
+                <td class="px-6 py-5 text-center font-semibold text-brown row-total">${{this.price}}</td>
+                <td class="px-6 py-5 text-center">
+                  <button class="remove-btn text-brown/50" aria-label="Xóa sản phẩm" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="px-6 py-5 border-t border-brown/10">
+          <a href="/menu" class="text-brown font-medium hover:text-accent transition-colors inline-flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Tiếp tục mua hàng
+          </a>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="fade-up">
+        <div class="bg-brown text-cream rounded-2xl p-8 shadow-xl sticky top-24">
+          <h3 class="font-heading text-2xl font-bold mb-6">Tóm tắt đơn hàng</h3>
+
+          <div class="space-y-4 text-sm">
+            <div class="flex justify-between text-cream/80">
+              <span>Tạm tính</span>
+              <span id="subtotalValue">${{subtotal}}</span>
+            </div>
+            <div class="flex justify-between text-cream/80">
+              <span>Phí giao hàng</span>
+              <span id="shippingValue">${{shipping}}</span>
+            </div>
+          </div>
+
+          <div class="border-t border-cream/20 my-6"></div>
+
+          <div class="flex justify-between items-center mb-8">
+            <span class="font-heading text-lg font-semibold">Tổng cộng</span>
+            <span class="font-heading text-2xl font-bold text-accent" id="totalValue">${{total}}</span>
+          </div>
+
+          <button id="openCheckoutBtn" type="button" class="checkout-btn w-full bg-accent text-brown font-semibold py-3.5 rounded-full shadow-lg hover:bg-cream transition-all duration-300">
+            Tiến hành thanh toán
+          </button>
+        </div>
+      </div>
+
+    </div>
+    {{/unless}}
+
+    <!-- ============ EMPTY CART STATE ============ -->
+    <div class="text-center py-20 fade-up {{#unless isEmpty}}hidden{{/unless}}" id="emptyCartState">
+      <div class="w-24 h-24 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      <h3 class="font-heading text-2xl font-bold text-brown mb-3">Giỏ hàng của bạn đang trống</h3>
+      <p class="text-brown/70 mb-8">Hãy khám phá menu và thêm những món yêu thích vào giỏ hàng nhé.</p>
+      <a href="/menu" class="cta-btn inline-block bg-brown text-cream font-semibold px-8 py-3.5 rounded-full shadow-lg hover:bg-accent hover:text-brown transition-all duration-300">
+        Khám phá Menu
+      </a>
+    </div>
+
+    {{! ============ CHECKOUT MODAL ============ }}
+    <div id="checkoutModal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4">
+      <div id="checkoutOverlay" class="absolute inset-0 bg-brown/70 backdrop-blur-sm"></div>
+      <div class="relative bg-cream w-full max-w-lg rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div id="checkoutFormView" class="p-8">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-heading text-2xl font-bold text-brown">Thông tin giao hàng</h3>
+            <button id="closeCheckoutBtn" type="button" class="text-brown/50 hover:text-brown transition-colors" aria-label="Đóng">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <form id="checkoutForm" class="space-y-4">
+            <div>
+              <label for="checkoutName" class="block text-sm font-medium text-brown mb-2">Họ và tên</label>
+              <input type="text" id="checkoutName" name="fullname" placeholder="Nguyễn Văn A" class="auth-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white text-brown placeholder-brown/40" required />
+            </div>
+            <div>
+              <label for="checkoutPhone" class="block text-sm font-medium text-brown mb-2">Số điện thoại</label>
+              <input type="tel" id="checkoutPhone" name="phone" placeholder="09xxxxxxxx" class="auth-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white text-brown placeholder-brown/40" required />
+            </div>
+            <div>
+              <label for="checkoutAddress" class="block text-sm font-medium text-brown mb-2">Địa chỉ giao hàng</label>
+              <textarea id="checkoutAddress" name="address" rows="2" placeholder="Số nhà, đường, phường/xã, quận/huyện..." class="auth-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white text-brown placeholder-brown/40 resize-none" required></textarea>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-brown mb-2">Phương thức thanh toán</label>
+              <div class="space-y-2">
+                <label class="flex items-center gap-3 border border-brown/20 rounded-lg px-4 py-3 cursor-pointer hover:border-accent transition-colors">
+                  <input type="radio" name="paymentMethod" value="cod" class="accent-accent" checked />
+                  <span class="text-brown text-sm">Thanh toán khi nhận hàng (COD)</span>
+                </label>
+                <label class="flex items-center gap-3 border border-brown/20 rounded-lg px-4 py-3 cursor-pointer hover:border-accent transition-colors">
+                  <input type="radio" name="paymentMethod" value="bank" class="accent-accent" />
+                  <span class="text-brown text-sm">Chuyển khoản ngân hàng</span>
+                </label>
+              </div>
+            </div>
+            <div class="border-t border-brown/10 pt-4 flex justify-between items-center">
+              <span class="font-heading font-semibold text-brown">Tổng thanh toán</span>
+              <span id="checkoutTotalValue" class="font-heading text-xl font-bold text-accent">$0.00</span>
+            </div>
+            <p id="checkoutError" class="text-red-600 text-sm hidden"></p>
+            <button id="submitCheckoutBtn" type="submit" class="auth-btn w-full bg-brown text-cream font-semibold py-3.5 rounded-full shadow-lg hover:bg-accent hover:text-brown transition-all duration-300">
+              Xác nhận đặt hàng
+            </button>
+          </form>
+        </div>
+        <div id="checkoutSuccessView" class="p-10 text-center hidden">
+          <div class="w-20 h-20 flex items-center justify-center bg-green-100 rounded-full mx-auto mb-6">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h3 class="font-heading text-2xl font-bold text-brown mb-2">Đặt hàng thành công!</h3>
+          <p class="text-brown/70 mb-1">Mã đơn hàng của bạn là</p>
+          <p id="orderIdValue" class="font-heading text-2xl font-bold text-accent mb-6">#CW00000</p>
+          <p class="text-brown/70 text-sm mb-8">Chúng tôi đã ghi nhận đơn hàng và sẽ liên hệ với bạn qua số điện thoại đã cung cấp để xác nhận trong thời gian sớm nhất.</p>
+          <a href="/" class="cta-btn inline-block bg-brown text-cream font-semibold px-8 py-3.5 rounded-full shadow-lg hover:bg-accent hover:text-brown transition-all duration-300">Về trang chủ</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const cartBody = document.getElementById('cartBody');
+    const cartContent = document.getElementById('cartContent');
+    const emptyCartState = document.getElementById('emptyCartState');
+    const subtotalEl = document.getElementById('subtotalValue');
+    const shippingEl = document.getElementById('shippingValue');
+    const totalEl = document.getElementById('totalValue');
+
+    function formatMoney(value) { return '$' + parseFloat(value).toFixed(2); }
+
+    function applyServerTotals(data) {
+      if (data.subtotal !== undefined) subtotalEl.textContent = formatMoney(data.subtotal);
+      if (data.shipping !== undefined) shippingEl.textContent = formatMoney(data.shipping);
+      if (data.total !== undefined) totalEl.textContent = formatMoney(data.total);
+      if (window.updateCartBadge && data.totalQuantity !== undefined) {
+        window.updateCartBadge(data.totalQuantity);
+      }
+    }
+
+    if (!cartBody) return;
+
+    cartBody.addEventListener('click', async function (e) {
+      const increaseBtn = e.target.closest('.qty-increase');
+      const decreaseBtn = e.target.closest('.qty-decrease');
+      const removeBtn = e.target.closest('.remove-btn');
+      const row = e.target.closest('.cart-row');
+      if (!row) return;
+
+      const productId = row.dataset.id;
+
+      if (increaseBtn || decreaseBtn) {
+        const action = increaseBtn ? 'increase' : 'decrease';
+        try {
+          const res = await fetch('/cart/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId, action })
+          });
+          const data = await res.json();
+          if (data.success) {
+            row.querySelector('.qty-value').textContent = data.quantity;
+            row.querySelector('.row-total').textContent = formatMoney(data.itemTotal);
+            applyServerTotals(data);
+          }
+        } catch (err) {
+          console.error('Lỗi cập nhật số lượng:', err);
+        }
+      }
+
+      if (removeBtn) {
+        try {
+          const res = await fetch('/cart/remove', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId })
+          });
+          const data = await res.json();
+          if (data.success) {
+            row.remove();
+            applyServerTotals(data);
+            if (data.isEmpty) {
+              cartContent.classList.add('hidden');
+              emptyCartState.classList.remove('hidden');
+            }
+          }
+        } catch (err) {
+          console.error('Lỗi xóa sản phẩm:', err);
+        }
+      }
+    });
+
+    const checkoutModal = document.getElementById('checkoutModal');
+    const checkoutOverlay = document.getElementById('checkoutOverlay');
+    const openCheckoutBtn = document.getElementById('openCheckoutBtn');
+    const closeCheckoutBtn = document.getElementById('closeCheckoutBtn');
+    const checkoutForm = document.getElementById('checkoutForm');
+    const checkoutFormView = document.getElementById('checkoutFormView');
+    const checkoutSuccessView = document.getElementById('checkoutSuccessView');
+    const checkoutTotalValue = document.getElementById('checkoutTotalValue');
+    const submitCheckoutBtn = document.getElementById('submitCheckoutBtn');
+    const orderIdValue = document.getElementById('orderIdValue');
+
+    function openModal() {
+      checkoutTotalValue.textContent = totalEl.textContent;
+      checkoutModal.classList.remove('hidden');
+      checkoutModal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      checkoutModal.classList.add('hidden');
+      checkoutModal.classList.remove('flex');
+      document.body.style.overflow = '';
+      checkoutFormView.classList.remove('hidden');
+      checkoutSuccessView.classList.add('hidden');
+      checkoutForm.reset();
+    }
+
+    function collectCartItems() {
+      return Array.from(cartBody.querySelectorAll('.cart-row')).map(function (row) {
+        return {
+          name: row.querySelector('.font-heading.font-semibold').textContent.trim(),
+          price: parseFloat(row.dataset.price),
+          quantity: parseInt(row.querySelector('.qty-value').textContent, 10)
+        };
+      });
+    }
+
+    if (openCheckoutBtn) openCheckoutBtn.addEventListener('click', openModal);
+    closeCheckoutBtn.addEventListener('click', closeModal);
+    checkoutOverlay.addEventListener('click', closeModal);
+
+    checkoutForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const orderPayload = {
+        customer: {
+          fullname: document.getElementById('checkoutName').value.trim(),
+          phone: document.getElementById('checkoutPhone').value.trim(),
+          address: document.getElementById('checkoutAddress').value.trim()
+        },
+        paymentMethod: checkoutForm.querySelector('input[name="paymentMethod"]:checked').value,
+        items: collectCartItems(),
+        subtotal: parseFloat(subtotalEl.textContent.replace('$', '')),
+        shipping: parseFloat(shippingEl.textContent.replace('$', '')),
+        discount: 0,
+        total: parseFloat(totalEl.textContent.replace('$', ''))
+      };
+
+      submitCheckoutBtn.disabled = true;
+      submitCheckoutBtn.textContent = 'Đang xử lý...';
+
+      try {
+        const response = await fetch('/api/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderPayload)
+        });
+
+        if (response.status === 401) {
+          const data = await response.json();
+          window.location.href = data.redirectUrl;
+          return;
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          orderIdValue.textContent = '#' + data.orderId;
+          checkoutFormView.classList.add('hidden');
+          checkoutSuccessView.classList.remove('hidden');
+          if (window.updateCartBadge) window.updateCartBadge(0);
+        } else {
+          alert(data.error || 'Có lỗi xảy ra.');
+        }
+
+      } catch (err) {
+        console.error('Lỗi khi đặt hàng:', err);
+        alert('Không thể kết nối tới server.');
+      } finally {
+        submitCheckoutBtn.disabled = false;
+        submitCheckoutBtn.textContent = 'Xác nhận đặt hàng';
+      }
+    });
+  });
+</script>

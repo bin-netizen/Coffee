@@ -1,0 +1,391 @@
+<style>
+  .filter-btn {
+    transition: all 0.3s ease;
+  }
+  .filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(75, 46, 46, 0.25);
+  }
+  .filter-btn.active {
+    background-color: #4b2e2e;
+    color: #D4CCB2;
+  }
+
+  .product-card {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .product-card:hover {
+    transform: scale(1.04) translateY(-6px);
+    box-shadow: 0 20px 35px rgba(75, 46, 46, 0.25);
+  }
+
+  .add-cart-btn {
+    transition: all 0.3s ease;
+  }
+  .add-cart-btn:hover {
+    background-color: #4b2e2e;
+    letter-spacing: 0.5px;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.8s ease both;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<!-- ============ HERO SECTION ============ -->
+<section
+  class="relative h-[60vh] md:h-[70vh] flex items-center justify-center text-center bg-cover bg-center"
+  style="background-image: url('/img/home.png');"
+>
+  <div class="absolute inset-0 bg-brown/70"></div>
+  <div class="relative z-10 px-4 fade-in">
+    <h1 class="font-heading text-5xl md:text-6xl font-bold text-cream mb-4 drop-shadow-lg">
+      Our Menu
+    </h1>
+    <p class="text-cream/90 text-lg md:text-xl font-light tracking-wide">
+      Discover our delicious drinks
+    </p>
+  </div>
+</section>
+
+<!-- ============ CATEGORY FILTER ============ -->
+<section class="max-w-7xl mx-auto px-6 py-12">
+  <div class="flex flex-wrap justify-center gap-4 mb-12" id="filterTabs">
+    <button class="filter-btn active px-6 py-2.5 rounded-full border-2 border-brown font-medium" data-filter="all">
+      All
+    </button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="coffee">
+      Coffee
+    </button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="tea">
+      Tea
+    </button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="dessert">
+      Dessert
+    </button>
+  </div>
+
+  <!-- ============ PRODUCT GRID ============ -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid">
+
+    {{! Product 1 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="espresso" data-name="Espresso" data-price="3.00">
+      <span class="absolute top-4 left-4 bg-accent text-brown text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+        Best Seller
+      </span>
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Espresso" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Espresso</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$3.00</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 2 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="latte" data-name="Latte" data-price="4.00">
+      <span class="absolute top-4 left-4 bg-brown text-cream text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+        New
+      </span>
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Latte" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Latte</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$4.00</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 3 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="cappuccino" data-name="Cappuccino" data-price="4.50">
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Cappuccino" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Cappuccino</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$4.50</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 4 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="mocha" data-name="Mocha" data-price="4.80">
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Mocha" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Mocha</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$4.80</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 5 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="americano" data-name="Americano" data-price="3.50">
+      <span class="absolute top-4 left-4 bg-accent text-brown text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+        Best Seller
+      </span>
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Americano" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Americano</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$3.50</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 6 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="tea" data-id="green-tea" data-name="Green Tea" data-price="3.20">
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Green Tea" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Green Tea</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$3.20</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 7 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="tea" data-id="milk-tea" data-name="Milk Tea" data-price="3.80">
+      <span class="absolute top-4 left-4 bg-brown text-cream text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+        New
+      </span>
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Milk Tea" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Milk Tea</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$3.80</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 8 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="tea" data-id="peach-tea" data-name="Peach Tea" data-price="3.60">
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Peach Tea" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Peach Tea</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$3.60</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 9 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="dessert" data-id="tiramisu" data-name="Tiramisu" data-price="5.50">
+      <span class="absolute top-4 left-4 bg-accent text-brown text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+        Best Seller
+      </span>
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Tiramisu" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Tiramisu</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$5.50</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 10 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="dessert" data-id="cheesecake" data-name="Cheesecake" data-price="5.00">
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Cheesecake" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Cheesecake</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$5.00</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 11 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="dessert" data-id="chocolate-cake" data-name="Chocolate Cake" data-price="6.00">
+      <span class="absolute top-4 left-4 bg-brown text-cream text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
+        New
+      </span>
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Chocolate Cake" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Chocolate Cake</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$6.00</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {{! Product 12 }}
+    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="dessert" data-id="croissant" data-name="Croissant" data-price="3.90">
+      <div class="overflow-hidden">
+        <img src="/img/latte.png" alt="Croissant" class="w-full h-56 object-cover" />
+      </div>
+      <div class="p-5">
+        <h3 class="font-heading text-xl font-semibold mb-1">Croissant</h3>
+        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
+        <div class="flex items-center justify-between">
+          <span class="text-lg font-bold text-brown">$3.90</span>
+          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const products = document.querySelectorAll('#productGrid > div');
+    const cartBadge = document.getElementById('cartBadge');
+
+    function updateCartBadge(count) {
+      if (!cartBadge) return;
+      const safeCount = Number(count) || 0;
+      cartBadge.textContent = safeCount > 10 ? '10+' : safeCount;
+    }
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active', 'bg-brown', 'text-cream'));
+        btn.classList.add('active', 'bg-brown', 'text-cream');
+
+        const filter = btn.dataset.filter;
+        products.forEach(product => {
+          if (filter === 'all' || product.dataset.category === filter) {
+            product.style.display = '';
+          } else {
+            product.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // ====== ADD TO CART ======
+    document.querySelectorAll('.add-cart-btn').forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        const card = btn.closest('.product-card');
+ 
+        const payload = {
+          productId: card.dataset.id,
+          name: card.dataset.name,
+          price: parseFloat(card.dataset.price),
+          quantity: 1
+        };
+ 
+        // Disable nút tạm thời để tránh double-click
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = 'Đang thêm...';
+ 
+        try {
+          const res = await fetch('/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+ 
+          // Chưa đăng nhập -> middleware trả về 401 kèm redirectUrl
+          if (res.status === 401) {
+            const data = await res.json();
+            window.location.href = data.redirectUrl; // chuyển sang /login?redirect=/menu
+            return;
+          }
+ 
+          const data = await res.json();
+ 
+          if (data.success) {
+            updateCartBadge(data.totalQuantity);
+            btn.textContent = 'Đã thêm ✓';
+            setTimeout(function () {
+              btn.textContent = originalText;
+              btn.disabled = false;
+            }, 1200);
+          } else {
+            alert(data.message || 'Có lỗi xảy ra.');
+            btn.textContent = originalText;
+            btn.disabled = false;
+          }
+ 
+        } catch (err) {
+          console.error('Lỗi khi thêm vào giỏ hàng:', err);
+          btn.textContent = originalText;
+          btn.disabled = false;
+        }
+      });
+    });
+ 
+    // ====== CẬP NHẬT BADGE GIỎ HÀNG REALTIME ======
+    function updateCartBadge(count) {
+      const badge = document.getElementById('cartBadge');
+      if (!badge) return;
+      badge.textContent = count > 10 ? '10+' : count;
+    }
+ 
+  });
+</script>
+ 

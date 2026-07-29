@@ -1,0 +1,69 @@
+<!-- ============ NAVBAR ============ -->
+<header class="fixed top-0 left-0 w-full z-50 bg-[#D4CCB2]/95 backdrop-blur-sm shadow-md">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-3">
+      <img src="/img/icon.png" alt="CoffeeWeb Logo" class="h-10 w-10 object-contain" />
+      <span class="font-heading text-2xl font-bold text-brown tracking-wide">CoffeeWeb</span>
+    </a>
+
+    <!-- Desktop Menu -->
+    <ul class="hidden md:flex items-center gap-8 font-medium text-brown">
+      <li><a href="/" class="nav-link {{#eq activePage 'home'}}active{{/eq}} hover:text-accent transition-colors">Home</a></li>
+      <li><a href="/menu" class="nav-link {{#eq activePage 'menu'}}active{{/eq}} hover:text-accent transition-colors">Menu</a></li>
+      <li><a href="/about" class="nav-link {{#eq activePage 'about'}}active{{/eq}} hover:text-accent transition-colors">About</a></li>
+      <li><a href="/contact" class="nav-link {{#eq activePage 'contact'}}active{{/eq}} hover:text-accent transition-colors">Contact</a></li>
+      <li>
+        <a href="/cart" class="nav-link {{#eq activePage 'cart'}}active{{/eq}} hover:text-accent transition-colors flex items-center gap-1">
+          Cart
+          <span id="cartBadge" class="bg-accent text-brown text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
+            {{#if (gt cartCount 10)}}10+{{else}}{{cartCount}}{{/if}}
+          </span>
+        </a>
+      </li>
+      <li>
+        {{#if isLoggedIn}}
+          <form action="/logout" method="POST" class="inline">
+            <button type="submit" class="bg-brown text-cream px-5 py-2 rounded-full hover:bg-accent hover:text-brown transition-all duration-300 shadow-md">
+              Đăng xuất
+            </button>
+          </form>
+        {{else}}
+          <a href="/login" class="bg-brown text-cream px-5 py-2 rounded-full hover:bg-accent hover:text-brown transition-all duration-300 shadow-md">
+            Login
+          </a>
+        {{/if}}
+      </li>
+    </ul>
+
+    <!-- Mobile Toggle -->
+    <button id="menuToggle" class="md:hidden text-brown focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <ul id="mobileMenu" class="hidden md:hidden flex-col bg-cream border-t border-brown/10 px-6 py-4 gap-4 font-medium text-brown">
+    <li><a href="/" class="block py-2 hover:text-accent transition-colors">Home</a></li>
+    <li><a href="/menu" class="block py-2 hover:text-accent transition-colors">Menu</a></li>
+    <li><a href="/about" class="block py-2 hover:text-accent transition-colors">About</a></li>
+    <li><a href="/contact" class="block py-2 hover:text-accent transition-colors">Contact</a></li>
+    <li><a href="/cart" class="block py-2 hover:text-accent transition-colors">Cart</a></li>
+    <li><a href="/login" class="block py-2 hover:text-accent transition-colors">Login</a></li>
+  </ul>
+</header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        mobileMenu.classList.toggle('flex');
+      });
+    }
+  });
+</script>

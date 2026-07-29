@@ -1,0 +1,224 @@
+<style>
+  .fade-up {
+    animation: fadeUp 0.8s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .value-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .value-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(75, 46, 46, 0.2);
+  }
+
+  .stat-number {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .team-card {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .team-card:hover {
+    transform: scale(1.03) translateY(-6px);
+    box-shadow: 0 20px 35px rgba(75, 46, 46, 0.25);
+  }
+
+  .cta-btn {
+    transition: all 0.3s ease;
+  }
+  .cta-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(75, 46, 46, 0.35);
+  }
+
+  .timeline-dot {
+    box-shadow: 0 0 0 4px rgba(200, 162, 122, 0.3);
+  }
+</style>
+
+<!-- ============ HERO SECTION ============ -->
+<section
+  class="relative h-[55vh] md:h-[65vh] flex items-center justify-center text-center bg-cover bg-center"
+  style="background-image: url('/img/home.png');"
+>
+  <div class="absolute inset-0 bg-gradient-to-b from-brown/70 via-brown/60 to-brown/85"></div>
+  <div class="relative z-10 px-4 fade-up">
+    <span class="text-accent font-semibold tracking-widest uppercase text-sm">Kể chuyện của chúng tôi</span>
+    <h1 class="font-heading text-5xl md:text-6xl font-bold text-cream mt-4 mb-4 drop-shadow-lg">
+      About CoffeeWeb
+    </h1>
+    <p class="text-cream/90 text-lg md:text-xl font-light tracking-wide max-w-xl mx-auto">
+      Nơi mỗi tách cà phê là một câu chuyện được kể bằng cả đam mê
+    </p>
+  </div>
+</section>
+
+<!-- ============ OUR STORY ============ -->
+<section class="bg-cream py-20 px-6">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div class="fade-up rounded-2xl overflow-hidden shadow-xl order-2 md:order-1">
+      <img src="/img/home.png" alt="CoffeeWeb Story" class="w-full h-[420px] object-cover" />
+    </div>
+    <div class="fade-up order-1 md:order-2">
+      <span class="text-accent font-semibold tracking-widest uppercase text-sm">Câu chuyện của chúng tôi</span>
+      <h2 class="font-heading text-4xl font-bold text-brown mt-3 mb-6">
+        Bắt đầu từ một tách cà phê nhỏ
+      </h2>
+      <p class="text-brown/80 leading-relaxed mb-4">
+        CoffeeWeb ra đời từ tình yêu dành cho những hạt cà phê chất lượng và mong muốn
+        mang đến một không gian ấm cúng, nơi mọi người có thể dừng lại, thư giãn và
+        thưởng thức những gì tinh túy nhất.
+      </p>
+      <p class="text-brown/80 leading-relaxed mb-4">
+        Từ những ngày đầu chỉ là một quầy pha chế nhỏ, chúng tôi đã không ngừng học hỏi,
+        chọn lọc nguồn nguyên liệu và trau dồi kỹ năng để mỗi tách cà phê đến tay khách
+        đều đạt chuẩn mực cao nhất.
+      </p>
+      <p class="text-brown/80 leading-relaxed">
+        Ngày hôm nay, CoffeeWeb tự hào là điểm đến quen thuộc của những ai yêu cà phê thật sự.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="bg-brown text-cream py-16 px-6">
+  <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div class="fade-up">
+      <span class="stat-number font-heading text-4xl md:text-5xl font-bold text-accent">8+</span>
+      <p class="text-cream/70 mt-2 text-sm md:text-base tracking-wide">Năm kinh nghiệm</p>
+    </div>
+    <div class="fade-up">
+      <span class="stat-number font-heading text-4xl md:text-5xl font-bold text-accent">50k+</span>
+      <p class="text-cream/70 mt-2 text-sm md:text-base tracking-wide">Ly cà phê đã phục vụ</p>
+    </div>
+    <div class="fade-up">
+      <span class="stat-number font-heading text-4xl md:text-5xl font-bold text-accent">15+</span>
+      <p class="text-cream/70 mt-2 text-sm md:text-base tracking-wide">Loại thức uống</p>
+    </div>
+    <div class="fade-up">
+      <span class="stat-number font-heading text-4xl md:text-5xl font-bold text-accent">4.9★</span>
+      <p class="text-cream/70 mt-2 text-sm md:text-base tracking-wide">Đánh giá từ khách hàng</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OUR VALUES ============ -->
+<section class="bg-cream py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <span class="text-accent font-semibold tracking-widest uppercase text-sm">Giá trị cốt lõi</span>
+      <h2 class="font-heading text-4xl md:text-5xl font-bold text-brown mt-3">Điều làm nên CoffeeWeb</h2>
+      <div class="w-20 h-1 bg-accent mx-auto mt-5 rounded-full"></div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+      <div class="value-card bg-white/60 rounded-2xl p-8 text-center shadow-md">
+        <div class="w-16 h-16 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18M8 17l3-4 3 3 5-6" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2">Chất lượng</h3>
+        <p class="text-brown/70 text-sm leading-relaxed">Chọn lọc từng hạt cà phê từ những vùng trồng danh tiếng nhất.</p>
+      </div>
+
+      <div class="value-card bg-white/60 rounded-2xl p-8 text-center shadow-md">
+        <div class="w-16 h-16 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 21C12 21 4 13.5 4 8.5A4.5 4.5 0 0112 5a4.5 4.5 0 018 3.5C20 13.5 12 21 12 21z" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2">Đam mê</h3>
+        <p class="text-brown/70 text-sm leading-relaxed">Mỗi ly cà phê là kết tinh của tình yêu và sự tận tâm.</p>
+      </div>
+
+      <div class="value-card bg-white/60 rounded-2xl p-8 text-center shadow-md">
+        <div class="w-16 h-16 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-2.13a4 4 0 100-8 4 4 0 000 8zm6 0a4 4 0 10-3.998-4.002" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2">Cộng đồng</h3>
+        <p class="text-brown/70 text-sm leading-relaxed">Xây dựng không gian gắn kết cho khách hàng và đội ngũ.</p>
+      </div>
+
+      <div class="value-card bg-white/60 rounded-2xl p-8 text-center shadow-md">
+        <div class="w-16 h-16 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m8.66-13H19M5 11H3.34M17.66 6.34l-.7.7M6.34 17.66l-.7.7M17.66 17.66l-.7-.7M6.34 6.34l-.7-.7M12 8a4 4 0 100 8 4 4 0 000-8z" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-xl font-semibold mb-2">Bền vững</h3>
+        <p class="text-brown/70 text-sm leading-relaxed">Hợp tác với nông trại canh tác có trách nhiệm với môi trường.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEAM ============ -->
+<section class="bg-brown/5 py-20 px-6">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-14 fade-up">
+      <span class="text-accent font-semibold tracking-widest uppercase text-sm">Đội ngũ của chúng tôi</span>
+      <h2 class="font-heading text-4xl md:text-5xl font-bold text-brown mt-3">Gặp gỡ Barista</h2>
+      <div class="w-20 h-1 bg-accent mx-auto mt-5 rounded-full"></div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <div class="team-card bg-white/70 rounded-2xl overflow-hidden shadow-lg text-center">
+        <img src="/img/latte.png" alt="Barista Minh Anh" class="w-full h-64 object-cover" />
+        <div class="p-6">
+          <h3 class="font-heading text-xl font-semibold mb-1">Minh Anh</h3>
+          <span class="text-accent text-sm font-medium">Head Barista</span>
+        </div>
+      </div>
+
+      <div class="team-card bg-white/70 rounded-2xl overflow-hidden shadow-lg text-center">
+        <img src="/img/latte.png" alt="Barista Quốc Huy" class="w-full h-64 object-cover" />
+        <div class="p-6">
+          <h3 class="font-heading text-xl font-semibold mb-1">Quốc Huy</h3>
+          <span class="text-accent text-sm font-medium">Coffee Roaster</span>
+        </div>
+      </div>
+
+      <div class="team-card bg-white/70 rounded-2xl overflow-hidden shadow-lg text-center">
+        <img src="/img/latte.png" alt="Barista Thảo Vy" class="w-full h-64 object-cover" />
+        <div class="p-6">
+          <h3 class="font-heading text-xl font-semibold mb-1">Thảo Vy</h3>
+          <span class="text-accent text-sm font-medium">Store Manager</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ CALL TO ACTION ============ -->
+<section
+  class="relative py-24 px-6 text-center bg-cover bg-center"
+  style="background-image: url('/img/home.png');"
+>
+  <div class="absolute inset-0 bg-brown/80"></div>
+  <div class="relative z-10 max-w-2xl mx-auto fade-up">
+    <h2 class="font-heading text-4xl md:text-5xl font-bold text-cream mb-6">
+      Hãy đến và trải nghiệm cùng chúng tôi
+    </h2>
+    <p class="text-cream/80 text-lg mb-10">
+      Khám phá thực đơn đa dạng và tận hưởng không gian ấm cúng tại CoffeeWeb.
+    </p>
+    <a
+      href="/menu"
+      class="cta-btn inline-block bg-accent text-brown font-semibold px-10 py-4 rounded-full shadow-lg hover:bg-cream transition-all duration-300 text-lg"
+    >
+      Xem Menu
+    </a>
+  </div>
+</section>
