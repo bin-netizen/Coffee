@@ -1,0 +1,179 @@
+<div class="flex items-center justify-between mb-8">
+  <h1 class="font-heading text-3xl font-bold text-brown">Mã giảm giá</h1>
+</div>
+
+<!-- Form tạo mã mới -->
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+  <h2 class="font-medium text-brown mb-4">Tạo mã mới</h2>
+  <form action="/admin/discounts" method="POST" class="grid grid-cols-2 md:grid-cols-3 gap-4" id="discountForm">
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">Mã code</label>
+      <input type="text" name="code" required placeholder="SALE20"
+        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm uppercase" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">Loại giảm</label>
+      <select name="discountType" id="discountType" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+        <option value="percent">Theo %</option>
+        <option value="fixed">Số tiền cố định (VNĐ)</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs text-gray-500 mb-1" id="discountValueLabel">Giá trị giảm (%)</label>
+        <input type="text" name="discountValue" id="discountValue" required inputmode="numeric"
+          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+    </div>
+
+    <div id="maxAmountField">
+      <label class="block text-xs text-gray-500 mb-1">
+        Giảm tối đa (VNĐ) <span class="text-gray-400">— để trống nếu không giới hạn</span>
+      </label>
+      <input type="text" name="maxDiscountAmount" id="maxDiscountAmount" inputmode="numeric"
+        placeholder="VD: 100.000 (bỏ trống = không giới hạn)"
+        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+    </div>
+
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">Số lượt dùng tối đa</label>
+      <input type="number" name="usageLimit" required min="1"
+        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">Đơn tối thiểu (VNĐ)</label>
+      <input type="text" name="minOrderValue" id="minOrderValue" value="0" inputmode="numeric"
+        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">Ngày hết hạn</label>
+      <input type="date" name="expiryDate" required
+        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+    </div>
+    <div class="col-span-2 md:col-span-3">
+      <button type="submit" class="bg-brown text-cream px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-accent hover:text-brown transition-colors">
+        + Tạo mã
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const typeSelect = document.getElementById('discountType');
+  const valueInput = document.getElementById('discountValue');
+  const valueLabel = document.getElementById('discountValueLabel');
+  const maxAmountField = document.getElementById('maxAmountField');
+  const maxAmountInput = document.getElementById('maxDiscountAmount');
+  const minOrderInput = document.getElementById('minOrderValue');
+  const form = document.getElementById('discountForm');
+
+  // Bỏ mọi ký tự không phải số, rồi chèn dấu chấm mỗi 3 số từ phải sang
+  function formatWithDots(rawValue) {
+    const digitsOnly = rawValue.replace(/\D/g, ''); // \D = không phải số 0-9
+    if (!digitsOnly) return '';
+    return digitsOnly.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  // Gắn format tự động khi gõ cho 1 input VNĐ
+  function attachMoneyFormat(input) {
+    input.addEventListener('input', () => {
+      input.value = formatWithDots(input.value);
+    });
+  }
+
+  attachMoneyFormat(maxAmountInput);
+  attachMoneyFormat(minOrderInput);
+
+  function updateFormByType() {
+    if (typeSelect.value === 'percent') {
+      valueLabel.textContent = 'Giá trị giảm (%)';
+      valueInput.setAttribute('inputmode', 'numeric');
+      valueInput.removeEventListener('input', percentHandler);
+      valueInput.addEventListener('input', percentHandler);
+      maxAmountField.style.display = 'block';
+    } else {
+      valueLabel.textContent = 'Giá trị giảm (VNĐ)';
+      valueInput.removeEventListener('input', percentHandler);
+      valueInput.removeEventListener('input', fixedHandler);
+      valueInput.addEventListener('input', fixedHandler);
+      maxAmountField.style.display = 'none';
+      maxAmountInput.value = '';
+    }
+  }
+
+  // Percent: chỉ cho gõ số, tự giới hạn 1-100 (không format dấu chấm vì là %)
+  function percentHandler() {
+    let digits = valueInput.value.replace(/\D/g, '');
+    if (digits && Number(digits) > 100) digits = '100';
+    valueInput.value = digits;
+  }
+
+  // Fixed: format dấu chấm giống tiền VNĐ
+  function fixedHandler() {
+    valueInput.value = formatWithDots(valueInput.value);
+  }
+
+  typeSelect.addEventListener('change', updateFormByType);
+  updateFormByType();
+
+  // QUAN TRỌNG: trước khi submit, bỏ hết dấu chấm để server nhận số thuần
+  form.addEventListener('submit', () => {
+    maxAmountInput.value = maxAmountInput.value.replace(/\./g, '');
+    minOrderInput.value = minOrderInput.value.replace(/\./g, '');
+    if (typeSelect.value === 'fixed') {
+      valueInput.value = valueInput.value.replace(/\./g, '');
+    }
+  });
+</script>
+
+<!-- Danh sách mã hiện có -->
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+  <table class="w-full text-left text-sm">
+    <thead>
+      <tr class="bg-gray-50 text-gray-500 uppercase text-xs">
+        <th class="px-6 py-3 font-medium">Mã</th>
+        <th class="px-6 py-3 font-medium">Giảm</th>
+        <th class="px-6 py-3 font-medium">Đã dùng</th>
+        <th class="px-6 py-3 font-medium">Hết hạn</th>
+        <th class="px-6 py-3 font-medium">Trạng thái</th>
+        <th class="px-6 py-3 font-medium text-right">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {{#each discounts}}
+      <tr class="{{#unless this.isActive}}opacity-50{{/unless}}">
+        <td class="px-6 py-4 font-medium text-brown">{{this.code}}</td>
+        <td class="px-6 py-4">
+            {{#if (eq this.discountType 'percent')}}
+              {{this.discountValue}}%
+            {{#if this.maxDiscountAmount}}
+          <span class="text-xs text-gray-400">(tối đa {{formatVND this.maxDiscountAmount}})</span>
+            {{/if}}
+              {{else}}
+                {{formatVND this.discountValue}}
+            {{/if}}
+        </td>
+        <td class="px-6 py-4">{{this.usedCount}} / {{this.usageLimit}}</td>
+        <td class="px-6 py-4">{{this.expiryDate}}</td>
+        <td class="px-6 py-4">
+          {{#if this.isActive}}
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Đang hoạt động</span>
+          {{else}}
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-600">Đã tắt</span>
+          {{/if}}
+        </td>
+        <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+          <form action="/admin/discounts/{{this._id}}/toggle" method="POST" class="inline">
+            <button type="submit" class="text-accent hover:underline text-sm font-medium">
+              {{#if this.isActive}}Tắt{{else}}Bật lại{{/if}}
+            </button>
+          </form>
+          <form action="/admin/discounts/{{this._id}}/delete" method="POST" class="inline" onsubmit="return confirm('Xóa mã này?');">
+            <button type="submit" class="text-red-600 hover:underline text-sm font-medium">Xóa</button>
+          </form>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Chưa có mã giảm giá nào.</td></tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,276 @@
+{{! ====== views/pages/admin/chat.hbs ====== }}
+{{! cSpell: disable }}
+<div class="mb-6">
+  <h1 class="font-heading text-2xl font-bold text-brown">Live Chat</h1>
+  <p class="text-sm text-brown/60 mt-1">Trò chuyện trực tiếp với khách hàng — tự động đính kèm đơn hàng đang chờ xử lý nếu có.</p>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-brown/10 flex h-[75vh] min-h-0 overflow-hidden">
+
+  <!-- ============ DANH SÁCH HỘI THOẠI ============ -->
+  <div class="w-80 flex-shrink-0 border-r border-brown/10 flex flex-col min-h-0">
+    <div class="px-4 py-3 border-b border-brown/10 font-semibold text-brown">Hội thoại</div>
+    <div id="conversationList" class="flex-1 overflow-y-auto min-h-0">
+      <p id="conversationListEmpty" class="hidden text-center text-sm text-brown/40 mt-6">Chưa có cuộc trò chuyện nào.</p>
+      <p id="conversationListLoading" class="text-center text-sm text-brown/40 mt-6">Đang tải...</p>
+    </div>
+  </div>
+
+  <!-- ============ KHUNG CHAT CHI TIẾT ============ -->
+  <div class="flex-1 flex flex-col min-h-0">
+    <div id="chatHeaderEmpty" class="flex-1 flex items-center justify-center text-brown/40 text-sm">
+      Chọn 1 cuộc trò chuyện để xem chi tiết
+    </div>
+
+    <div id="chatDetailView" class="hidden flex-1 flex flex-col min-h-0">
+      <div class="px-4 py-3 border-b border-brown/10 font-semibold text-brown" id="chatDetailHeaderName"></div>
+
+      <div id="chatDetailMessages" class="flex-1 overflow-y-auto px-4 py-3 space-y-2 bg-cream/10 min-h-0"></div>
+
+      <form id="adminChatForm" class="flex-shrink-0 border-t border-brown/10 p-3 flex gap-2">
+        <input type="text" id="adminChatInput" placeholder="Nhập tin nhắn trả lời..." maxlength="2000"
+          class="flex-1 px-4 py-2.5 rounded-full border border-brown/20 text-sm focus:outline-none focus:border-accent" />
+        <button type="submit" class="px-5 py-2.5 rounded-full bg-brown text-cream text-sm font-medium hover:bg-brown/90 transition-colors">
+          Gửi
+        </button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  (function () {
+    const conversationList = document.getElementById('conversationList');
+    const conversationListEmpty = document.getElementById('conversationListEmpty');
+    const conversationListLoading = document.getElementById('conversationListLoading');
+
+    const chatHeaderEmpty = document.getElementById('chatHeaderEmpty');
+    const chatDetailView = document.getElementById('chatDetailView');
+    const chatDetailHeaderName = document.getElementById('chatDetailHeaderName');
+    const chatDetailMessages = document.getElementById('chatDetailMessages');
+
+    const adminChatForm = document.getElementById('adminChatForm');
+    const adminChatInput = document.getElementById('adminChatInput');
+
+    let activeUserId = null;
+    let conversationsCache = [];
+    let lastSentAdminContent = null; // Track tin admin vừa gửi
+    let lastSentAdminTime = 0;
+    const socket = io();
+    let autoScrollEnabled = true;
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString('vi-VN') + '₫';
+    }
+
+    function formatTime(iso) {
+      return new Date(iso).toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function isNearBottom(element, threshold = 120) {
+      return element.scrollHeight - element.scrollTop - element.clientHeight <= threshold;
+    }
+
+    function scrollToBottom(force = false) {
+      if (!chatDetailMessages) return;
+      if (force || autoScrollEnabled || isNearBottom(chatDetailMessages)) {
+        chatDetailMessages.scrollTop = chatDetailMessages.scrollHeight;
+      }
+    }
+
+    chatDetailMessages.addEventListener('scroll', function () {
+      autoScrollEnabled = isNearBottom(chatDetailMessages);
+    });
+
+    // ---------- Render danh sách hội thoại bên trái ----------
+    function renderConversationList() {
+      conversationList.querySelectorAll('.conversation-item').forEach((el) => el.remove());
+      conversationListEmpty.classList.toggle('hidden', conversationsCache.length > 0);
+
+      conversationsCache.forEach((conv) => {
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'conversation-item w-full text-left px-4 py-3 border-b border-brown/5 hover:bg-cream/20 transition-colors flex items-start justify-between gap-2 ' +
+          (conv.userId === activeUserId ? 'bg-cream/30' : '');
+        item.innerHTML =
+          '<div class="min-w-0">' +
+            '<div class="font-medium text-sm text-brown truncate">' + escapeHtml(conv.fullname) + '</div>' +
+            '<div class="text-xs text-brown/50 truncate mt-0.5">' + (conv.lastSenderRole === 'admin' ? 'Bạn: ' : '') + escapeHtml(conv.lastMessage) + '</div>' +
+          '</div>' +
+          (conv.unreadCount > 0
+            ? '<span class="flex-shrink-0 bg-red-500 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center">' + conv.unreadCount + '</span>'
+            : '');
+        item.addEventListener('click', () => openConversation(conv.userId, conv.fullname));
+        conversationList.appendChild(item);
+      });
+    }
+
+    async function loadConversations() {
+      try {
+        const res = await fetch('/admin/chat/conversations');
+        const data = await res.json();
+        conversationListLoading.classList.add('hidden');
+        if (data.success) {
+          conversationsCache = data.conversations;
+          renderConversationList();
+        }
+      } catch (err) {
+        console.error('Lỗi tải danh sách hội thoại:', err);
+        conversationListLoading.textContent = 'Không tải được danh sách.';
+      }
+    }
+
+    // ---------- Render 1 tin nhắn trong khung chi tiết ----------
+    function renderMessage(msg) {
+      const isAdminMsg = msg.senderRole === 'admin';
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex flex-col gap-1 ' + (isAdminMsg ? 'items-end' : 'items-start');
+
+      const timeEl = document.createElement('div');
+      timeEl.className = 'text-xs text-brown/40 px-3';
+      timeEl.textContent = msg.createdAt ? formatTime(msg.createdAt) : new Date().toLocaleTimeString('vi-VN');
+      wrapper.appendChild(timeEl);
+
+      const bubble = document.createElement('div');
+      bubble.className = 'max-w-[70%] rounded-2xl px-3 py-2 text-sm break-words ' +
+        (isAdminMsg ? 'bg-brown text-cream rounded-br-sm' : 'bg-white border border-brown/10 text-brown rounded-bl-sm');
+      bubble.textContent = escapeHtml(msg.content);
+      wrapper.appendChild(bubble);
+      chatDetailMessages.appendChild(wrapper);
+
+      if (msg.attachedOrder) {
+        const orderWrapper = document.createElement('div');
+        orderWrapper.className = 'flex ' + (isAdminMsg ? 'justify-end' : 'justify-start') + ' px-3';
+        orderWrapper.innerHTML =
+          '<div class="max-w-[70%] rounded-xl border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-brown">' +
+            '<div class="font-semibold">Đơn hàng #' + escapeHtml(msg.attachedOrder.orderId) + '</div>' +
+            '<div class="text-brown/70 mt-0.5">' + escapeHtml(msg.attachedOrder.itemsSummary) + '</div>' +
+            '<div class="font-medium mt-0.5">' + formatMoney(msg.attachedOrder.total) + '</div>' +
+          '</div>';
+        chatDetailMessages.appendChild(orderWrapper);
+      }
+
+      // Chỉ auto-scroll nếu người dùng đang ở cuối khung chat; nếu đang xem cũ thì giữ nguyên vị trí
+      setTimeout(() => {
+        scrollToBottom(false);
+      }, 0);
+    }
+
+    // ---------- Mở 1 hội thoại ----------
+    async function openConversation(userId, fullname) {
+      activeUserId = userId;
+      chatHeaderEmpty.classList.add('hidden');
+      chatDetailView.classList.remove('hidden');
+      chatDetailHeaderName.textContent = fullname;
+      chatDetailMessages.innerHTML = '<p class="text-center text-xs text-brown/40 py-8">Đang tải...</p>';
+
+      renderConversationList(); // highlight hội thoại đang chọn
+
+      try {
+        const res = await fetch('/admin/chat/conversations/' + userId);
+        const data = await res.json();
+        
+        if (data.success && data.messages && data.messages.length > 0) {
+          chatDetailMessages.innerHTML = ''; // Xóa loading text
+          data.messages.forEach(msg => {
+            console.log('Render tin nhắn:', msg);
+            renderMessage(msg);
+          });
+          setTimeout(() => scrollToBottom(true), 50);
+        } else if (data.success) {
+          chatDetailMessages.innerHTML = '<p class="text-center text-xs text-brown/40 py-8">Chưa có tin nhắn nào.</p>';
+        } else {
+          chatDetailMessages.innerHTML = '<p class="text-center text-xs text-red-500 py-8">Lỗi tải tin nhắn</p>';
+        }
+      } catch (err) {
+        console.error('Lỗi tải chi tiết hội thoại:', err);
+        chatDetailMessages.innerHTML = '<p class="text-center text-xs text-red-500 py-8">Lỗi kết nối</p>';
+      }
+
+      const conv = conversationsCache.find((c) => c.userId === userId);
+      if (conv) conv.unreadCount = 0;
+      renderConversationList();
+    }
+
+// ---------- Gửi tin trả lời ----------
+adminChatForm.addEventListener('submit', function (e) {
+  e.preventDefault();
+  const content = adminChatInput.value.trim();
+  if (!content) {
+    alert('Vui lòng nhập nội dung tin nhắn.');
+    return;
+  }
+  if (!activeUserId) {
+    alert('Bạn chưa chọn hội thoại để gửi.');
+    return;
+  }
+
+  // Track tin admin vừa gửi
+  lastSentAdminContent = content;
+  lastSentAdminTime = Date.now();
+
+  // Xóa loading text nếu có
+  if (chatDetailMessages.innerHTML.includes('Chưa có tin nhắn')) {
+    chatDetailMessages.innerHTML = '';
+  }
+
+  // Hiển thị ngay bong bóng tin nhắn admin (giả lập với thời gian)
+  const tempMsg = { senderRole: 'admin', content, createdAt: new Date().toISOString() };
+  renderMessage(tempMsg);
+  scrollToBottom(true);
+
+  // Gửi qua socket tới server
+  socket.emit('chat:admin-send', { toUserId: activeUserId, content }, function (res) {
+    if (!res || !res.success) {
+      console.error('Lỗi gửi tin nhắn:', res);
+      alert((res && res.message) || 'Không gửi được tin nhắn.');
+    }
+  });
+
+  adminChatInput.value = '';
+  adminChatInput.focus();
+});
+
+    // ---------- Nhận tin nhắn real-time ----------
+    socket.on('chat:new-message', function (msg) {
+      let conv = conversationsCache.find((c) => c.userId === msg.conversationUser);
+      if (!conv) {
+        conv = { userId: msg.conversationUser, fullname: 'Khách hàng mới', unreadCount: 0 };
+        conversationsCache.unshift(conv);
+      } else {
+        conversationsCache = conversationsCache.filter((c) => c.userId !== msg.conversationUser);
+        conversationsCache.unshift(conv);
+      }
+      console.log('Nhận tin nhắn:', msg);
+      conv.lastMessage = msg.content;
+      conv.lastSenderRole = msg.senderRole;
+
+      // Tránh duplicate: Nếu là tin admin gửi và vừa gửi <2s, skip render lại
+      const isAdminJustSent = msg.senderRole === 'admin' && 
+                             msg.content === lastSentAdminContent && 
+                             Date.now() - lastSentAdminTime < 2000;
+
+      if (msg.conversationUser === activeUserId) {
+        // Chỉ render lại nếu không phải tin admin vừa gửi
+        if (!isAdminJustSent) {
+          renderMessage(msg);
+          scrollToBottom(false);
+        }
+      } else if (msg.senderRole === 'customer') {
+        conv.unreadCount = (conv.unreadCount || 0) + 1;
+      }
+
+      renderConversationList();
+    });
+
+    loadConversations();
+  })();
+</script>

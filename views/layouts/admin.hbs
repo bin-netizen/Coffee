@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - CoffeeWeb</title>
+  <link rel="icon" href="/img/icon.svg" type="image/png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { cream: '#D4CCB2', brown: '#4b2e2e', accent: '#c8a27a' },
+          fontFamily: { heading: ['"Playfair Display"', 'serif'], body: ['Poppins', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Poppins', sans-serif; }
+    h1, h2, h3, .font-heading { font-family: 'Playfair Display', serif; }
+    .sidebar-link { transition: all 0.2s ease; }
+    .sidebar-link:hover { background-color: rgba(200, 162, 122, 0.15); }
+    .sidebar-link.active { background-color: #c8a27a; color: #4b2e2e; font-weight: 600; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 text-brown font-body">
+
+  <div class="flex min-h-screen">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="w-64 bg-brown text-cream flex-shrink-0 flex flex-col">
+      <div class="px-6 py-6 border-b border-cream/10 flex items-center gap-3">
+        <img src="/img/icon.svg" alt="CoffeeWeb" class="h-8 w-8" />
+        <span class="font-heading text-lg font-bold">CoffeeWeb Admin</span>
+      </div>
+
+      <nav class="flex-1 px-4 py-6 space-y-1">
+        <a href="/admin" class="sidebar-link {{#eq activeAdminPage 'dashboard'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+          Dashboard
+        </a>
+        <a href="/admin/products" class="sidebar-link {{#eq activeAdminPage 'products'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+          Sản phẩm
+        </a>
+        <a href="/admin/orders" class="sidebar-link {{#eq activeAdminPage 'orders'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
+          Đơn hàng
+        </a>
+        <a href="/admin/users" class="sidebar-link {{#eq activeAdminPage 'users'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-2.13a4 4 0 100-8 4 4 0 000 8zm6 0a4 4 0 10-3.998-4.002" /></svg>
+          Người dùng
+        </a>
+        <a href="/admin/discounts" class="sidebar-link {{#eq activeAdminPage 'discounts'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 6h.008v.008H6V6z" /></svg>
+          Mã giảm giá
+        </a>
+        <a href="/admin/toppings" class="sidebar-link {{#eq activeAdminPage 'toppings'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6v12m6-6H6" /></svg>
+          Topping
+        </a>
+        <a href="/admin/messages" class="sidebar-link {{#eq activeAdminPage 'messages'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+          Tin nhắn
+        </a>
+        <a href="/admin/chat" class="sidebar-link {{#eq activeAdminPage 'chat'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+          Live Chat
+        </a>
+      </nav>
+
+      <div class="px-4 py-6 border-t border-cream/10 space-y-2">
+        <a href="/" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-cream/70">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+          Về trang chủ
+        </a>
+        <form action="/logout" method="POST">
+          <button type="submit" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm text-cream/70 text-left">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            Đăng xuất
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <main class="flex-1 p-8">
+      {{{body}}}
+    </main>
+
+  </div>
+
+  <script src="/js/admin-revenue.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 const products = [
   { id: 1, name: "Espresso", price: 35000, image: "/img/espresso.png" },
   { id: 2, name: "Latte", price: 40000, image: "/img/latte.png" },
-  { id: 3, name: "Cappuccino", price: 45000, image: "/img/cappuccino.png" },
+  { id: 3, name: "Cappuccino", price: 45000, image: "/img/cappuccino.jpg" },
   { id: 4, name: "Mocha", price: 50000, image: "/img/coffee.png" }
 ];
 

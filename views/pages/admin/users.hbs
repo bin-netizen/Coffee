@@ -1,0 +1,40 @@
+<h1 class="font-heading text-3xl font-bold text-brown mb-8">Quản lý người dùng</h1>
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+  <table class="w-full text-left text-sm">
+    <thead>
+      <tr class="bg-gray-50 text-gray-500 uppercase text-xs">
+        <th class="px-6 py-3 font-medium">Họ tên</th>
+        <th class="px-6 py-3 font-medium">Email</th>
+        <th class="px-6 py-3 font-medium">Vai trò</th>
+        <th class="px-6 py-3 font-medium">Ngày tham gia</th>
+        <th class="px-6 py-3 font-medium text-right">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {{#each users}}
+      <tr>
+        <td class="px-6 py-4 font-medium text-brown">{{this.fullname}}</td>
+        <td class="px-6 py-4">{{this.email}}</td>
+        <td class="px-6 py-4">
+          {{#eq this.role 'admin'}}
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-brown text-cream">Admin</span>
+          {{else}}
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Customer</span>
+          {{/eq}}
+        </td>
+        <td class="px-6 py-4 text-gray-500">{{this.createdAt}}</td>
+        <td class="px-6 py-4 text-right">
+          <form action="/admin/users/{{this._id}}/toggle-role" method="POST" onsubmit="return confirm('Đổi quyền người dùng này?');">
+            <button type="submit" class="text-accent hover:underline text-sm font-medium">
+              {{#eq this.role 'admin'}}Gỡ quyền Admin{{else}}Cấp quyền Admin{{/eq}}
+            </button>
+          </form>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Chưa có người dùng nào.</td></tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

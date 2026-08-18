@@ -1,0 +1,88 @@
+<div class="flex items-center justify-between mb-8">
+  <h1 class="font-heading text-3xl font-bold text-brown">Topping</h1>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
+  <h2 class="font-medium text-brown mb-4">Thêm topping mới</h2>
+  <form action="/admin/toppings" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">Tên topping</label>
+      <input type="text" name="name" required placeholder="Trân châu đen"
+        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+    </div>
+    <div>
+      <label class="block text-xs text-gray-500 mb-1">Giá (VNĐ)</label>
+      <input type="text" name="price" id="toppingPrice" required inputmode="numeric" placeholder="10.000"
+        class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm" />
+    </div>
+    <div class="flex items-end">
+      <button type="submit" class="bg-brown text-cream px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-accent hover:text-brown transition-colors">
+        + Thêm topping
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+  <table class="w-full text-left text-sm">
+    <thead>
+      <tr class="bg-gray-50 text-gray-500 uppercase text-xs">
+        <th class="px-6 py-3 font-medium">Tên</th>
+        <th class="px-6 py-3 font-medium">Giá</th>
+        <th class="px-6 py-3 font-medium">Trạng thái</th>
+        <th class="px-6 py-3 font-medium text-right">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {{#each toppings}}
+      <tr class="{{#unless this.isActive}}opacity-50{{/unless}}">
+        <form action="/admin/toppings/{{this._id}}" method="POST">
+          <td class="px-6 py-4">
+            <input type="text" name="name" value="{{this.name}}"
+              class="border border-transparent hover:border-gray-200 rounded px-2 py-1 text-sm w-full" />
+          </td>
+          <td class="px-6 py-4">
+            <input type="text" name="price" value="{{this.price}}"
+              class="border border-transparent hover:border-gray-200 rounded px-2 py-1 text-sm w-24" />
+          </td>
+          <td class="px-6 py-4">
+            {{#if this.isActive}}
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700">Đang bán</span>
+            {{else}}
+              <span class="px-3 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-600">Đã ẩn</span>
+            {{/if}}
+          </td>
+          <td class="px-6 py-4 text-right space-x-2 whitespace-nowrap">
+            <button type="submit" class="text-accent hover:underline text-sm font-medium">Lưu</button>
+        </form>
+            <form action="/admin/toppings/{{this._id}}/toggle" method="POST" class="inline">
+              <button type="submit" class="text-accent hover:underline text-sm font-medium">
+                {{#if this.isActive}}Ẩn{{else}}Bật lại{{/if}}
+              </button>
+            </form>
+            <form action="/admin/toppings/{{this._id}}/delete" method="POST" class="inline" onsubmit="return confirm('Xóa topping này?');">
+              <button type="submit" class="text-red-600 hover:underline text-sm font-medium">Xóa</button>
+            </form>
+          </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">Chưa có topping nào.</td></tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  document.getElementById('toppingPrice').addEventListener('input', (e) => {
+    const digits = e.target.value.replace(/\D/g, '');
+    e.target.value = digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  });
+
+  // Bỏ dấu chấm trước khi submit ở TẤT CẢ form có input price (thêm mới + sửa từng dòng)
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', () => {
+      const priceInput = form.querySelector('input[name="price"]');
+      if (priceInput) priceInput.value = priceInput.value.replace(/\./g, '');
+    });
+  });
+</script>

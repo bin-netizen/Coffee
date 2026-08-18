@@ -1,0 +1,226 @@
+{{! ====== views/partials/chatWidget.hbs ====== }}
+{{! Chỉ hiện cho khách ĐÃ đăng nhập và KHÔNG phải admin — admin dùng trang riêng /admin/chat }}
+{{#if isLoggedIn}}
+{{#unless isAdmin}}
+<div id="chatWidgetRoot" class="fixed bottom-6 right-6 z-50">
+
+  <!-- Nút nổi -->
+  <button id="chatToggleBtn" type="button"
+    class="w-14 h-14 rounded-full bg-brown text-cream shadow-lg flex items-center justify-center hover:bg-brown/90 transition-colors relative">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+    </svg>
+    <span id="chatUnreadDot" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-cream"></span>
+  </button>
+
+  <!-- Khung chat -->
+  <div id="chatPanel" class="hidden absolute bottom-[72px] right-0 w-80 sm:w-96 h-[28rem] bg-white rounded-2xl shadow-2xl border border-brown/10 flex flex-col overflow-hidden">
+    <div class="bg-brown text-cream px-4 py-3 flex items-center justify-between flex-shrink-0">
+      <span class="font-heading font-semibold">Chat với cửa hàng</span>
+      <button id="chatCloseBtn" type="button" class="text-cream/70 hover:text-cream">✕</button>
+    </div>
+
+    <div id="chatMessages" class="flex-1 overflow-y-auto px-3 py-3 space-y-2 bg-cream/10">
+      <p id="chatEmptyHint" class="text-center text-xs text-brown/40 mt-4">Gửi tin nhắn để bắt đầu trò chuyện với cửa hàng.</p>
+    </div>
+
+    <form id="chatForm" class="flex-shrink-0 border-t border-brown/10 p-2 flex gap-2">
+      <input type="text" id="chatInput" placeholder="Nhập tin nhắn..." maxlength="2000"
+        class="flex-1 px-3 py-2 rounded-full border border-brown/20 text-sm focus:outline-none focus:border-accent" />
+      <button type="submit" class="w-9 h-9 rounded-full bg-accent text-brown flex items-center justify-center flex-shrink-0 hover:bg-brown hover:text-cream transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  (function () {
+    const toggleBtn = document.getElementById('chatToggleBtn');
+    const panel = document.getElementById('chatPanel');
+    const closeBtn = document.getElementById('chatCloseBtn');
+    const messagesBox = document.getElementById('chatMessages');
+    const emptyHint = document.getElementById('chatEmptyHint');
+    const form = document.getElementById('chatForm');
+    const input = document.getElementById('chatInput');
+    const unreadDot = document.getElementById('chatUnreadDot');
+
+    let historyLoaded = false;
+    let socket = null;
+    let lastSentContent = null; // Track tin vừa gửi để tránh duplicate
+    let lastSentTime = 0;
+    let selectedOrderForChat = null;
+
+    // Cho phép trang khác (vd nút ở /orders) gọi mở khung chat này từ bên ngoài
+    window.openChatWidget = function (options = {}) {
+      selectedOrderForChat = options.orderId || null;
+      panel.classList.remove('hidden');
+      unreadDot.classList.add('hidden');
+      if (!historyLoaded) loadHistory();
+    };
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function formatMoney(value) {
+      return Number(value).toLocaleString('vi-VN') + '₫';
+    }
+
+    function formatTime(iso) {
+      const date = new Date(iso);
+      return date.toLocaleString('vi-VN', { 
+        day: '2-digit', 
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit', 
+        minute: '2-digit'
+      });
+    }
+
+    function renderMessage(msg) {
+      emptyHint.classList.add('hidden');
+      const isMe = msg.senderRole === 'customer';
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'flex flex-col gap-1 ' + (isMe ? 'items-end' : 'items-start');
+
+      // Hiển thị thời gian
+      const timeEl = document.createElement('div');
+      timeEl.className = 'text-xs text-brown/40 px-3';
+      timeEl.textContent = msg.createdAt ? formatTime(msg.createdAt) : formatTime(new Date().toISOString());
+      wrapper.appendChild(timeEl);
+
+      const bubble = document.createElement('div');
+      bubble.className = 'max-w-[75%] rounded-2xl px-3 py-2 text-sm break-words ' +
+        (isMe ? 'bg-brown text-cream rounded-br-sm' : 'bg-white border border-brown/10 text-brown rounded-bl-sm');
+      bubble.textContent = escapeHtml(msg.content);
+      wrapper.appendChild(bubble);
+      messagesBox.appendChild(wrapper);
+
+      // Nếu tin nhắn có đính kèm đơn hàng -> hiện thêm 1 thẻ nhỏ ngay dưới bong bóng chat
+      if (msg.attachedOrder) {
+        const orderWrapper = document.createElement('div');
+        orderWrapper.className = 'flex ' + (isMe ? 'justify-end' : 'justify-start') + ' px-3';
+        orderWrapper.innerHTML =
+          '<div class="max-w-[75%] rounded-xl border border-accent/40 bg-accent/10 px-3 py-2 text-xs text-brown">' +
+            '<div class="font-semibold">Đơn hàng #' + escapeHtml(msg.attachedOrder.orderId) + '</div>' +
+            '<div class="text-brown/70 mt-0.5">' + escapeHtml(msg.attachedOrder.itemsSummary) + '</div>' +
+            '<div class="font-medium mt-0.5">' + formatMoney(msg.attachedOrder.total) + '</div>' +
+          '</div>';
+        messagesBox.appendChild(orderWrapper);
+      }
+
+      setTimeout(() => {
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+      }, 0);
+    }
+
+    async function loadHistory() {
+      historyLoaded = true;
+      try {
+        const res = await fetch('/chat/history');
+        const data = await res.json();
+        if (data.success && data.messages.length > 0) {
+          data.messages.forEach(renderMessage);
+        }
+      } catch (err) {
+        console.error('Lỗi tải lịch sử chat:', err);
+      }
+    }
+
+    function connectSocket() {
+      if (socket) return;
+      socket = io();
+
+      socket.on('connect', function () {
+        console.log('Chat socket connected:', socket.id);
+      });
+
+      socket.on('disconnect', function () {
+        console.log('Chat socket disconnected');
+      });
+
+      socket.on('chat:new-message', function (msg) {
+        console.log('Socket: Nhận tin nhắn:', msg);
+
+        // Tránh duplicate cho tin nhắn customer đơn thuần, nhưng không skip bản server echo
+        // có kèm attachedOrder (đây là lần đầu tiên cần hiển thị mã + thông tin đơn hàng).
+        const isDuplicatePlainCustomerMessage =
+          msg.senderRole === 'customer' &&
+          msg.content === lastSentContent &&
+          Date.now() - lastSentTime < 2000 &&
+          !msg.attachedOrder;
+
+        if (isDuplicatePlainCustomerMessage) {
+          console.log('Socket: Skip duplicate từ tin vừa gửi');
+          return;
+        }
+
+        renderMessage(msg);
+        // Nếu khung đang đóng và tin nhắn không phải do chính mình vừa gửi -> hiện chấm đỏ báo tin mới
+        if (panel.classList.contains('hidden') && msg.senderRole === 'admin') {
+          unreadDot.classList.remove('hidden');
+        }
+      });
+
+      socket.on('error', function (error) {
+        console.error('Socket error:', error);
+      });
+    }
+
+    toggleBtn.addEventListener('click', function () {
+      const isHidden = panel.classList.contains('hidden');
+      if (isHidden) {
+        window.openChatWidget();
+      } else {
+        panel.classList.add('hidden');
+      }
+    });
+
+    closeBtn.addEventListener('click', function () {
+      panel.classList.add('hidden');
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const content = input.value.trim();
+      if (!content || !socket) {
+        console.error('Content empty or socket not ready');
+        return;
+      }
+
+      // Track tin vừa gửi để tránh duplicate khi socket nhận lại
+      lastSentContent = content;
+      lastSentTime = Date.now();
+
+      // Render message ngay (optimistic update)
+      const tempMsg = { 
+        senderRole: 'customer', 
+        content, 
+        createdAt: new Date().toISOString()
+      };
+      renderMessage(tempMsg);
+
+      // Gửi qua socket, kèm orderId nếu khách đang chat từ một đơn hàng cụ thể
+      const payload = { content };
+      if (selectedOrderForChat) payload.orderId = selectedOrderForChat;
+
+      socket.emit('chat:customer-send', payload, function (res) {
+        if (!res || !res.success) {
+          console.error('Lỗi gửi tin:', res);
+          alert((res && res.message) || 'Không gửi được tin nhắn, vui lòng thử lại.');
+        }
+      });
+      input.value = '';
+      input.focus();
+    });
+
+    connectSocket();
+  })();
+</script>
+{{/unless}}
+{{/if}}

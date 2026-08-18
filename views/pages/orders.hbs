@@ -1,0 +1,196 @@
+<style>
+  .fade-up { animation: fadeUp 0.8s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  .order-card { transition: box-shadow 0.25s ease; }
+  .order-card:hover { box-shadow: 0 15px 30px rgba(75, 46, 46, 0.12); }
+  .order-details summary { cursor: pointer; list-style: none; }
+  .order-details summary::-webkit-details-marker { display: none; }
+  .order-details[open] .chevron { transform: rotate(180deg); }
+  .chevron { transition: transform 0.25s ease; }
+  .cta-btn { transition: all 0.3s ease; }
+  .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(75, 46, 46, 0.35); }
+</style>
+
+<!-- ============ HERO SECTION ============ -->
+<!-- ============ HERO SECTION ============ -->
+<section class="hero-bg relative h-screen min-h-[560px] max-h-[880px] flex items-end justify-center text-center bg-cover bg-center overflow-hidden pb-24 md:pb-28" style="background-image: url('/img/order.jpg');">
+  <!-- Vignette chỉ ở dải dưới cùng, đúng vùng chữ + mũi tên — phần ảnh còn lại giữ nguyên, không bị che -->
+  <div class="absolute inset-x-0 bottom-0 h-72 md:h-80" style="background: linear-gradient(to top, rgba(43,26,20,0.78) 0%, rgba(43,26,20,0.4) 55%, transparent 100%);"></div>
+
+  <div class="relative z-10 px-6 max-w-3xl fade-up">
+    <h1 class="font-heading text-5xl md:text-7xl font-bold text-cream mt-6 mb-6 leading-[1.05] drop-shadow-[0_4px_20px_rgba(0,0,0,0.45)]">
+      Đơn hàng của bạn
+    </h1>
+    <p class="text-cream/95 text-base md:text-xl font-light tracking-wide drop-shadow-md">
+      Quản lý đơn hàng, theo dõi trạng thái và liên hệ cửa hàng khi cần thiết.
+    </p>
+  </div>
+
+  <div class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-cream/80">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </div>
+</section>
+<!-- ============ ORDERS LIST ============ -->
+<section class="bg-cream py-16 px-6">
+  <div class="max-w-4xl mx-auto">
+
+    {{#if isEmpty}}
+    <div class="text-center py-20 fade-up">
+      <div class="w-24 h-24 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      </div>
+      <h3 class="font-heading text-2xl font-bold text-brown mb-3">Bạn chưa có đơn hàng nào</h3>
+      <p class="text-brown/70 mb-8">Hãy khám phá menu và đặt món yêu thích đầu tiên nhé.</p>
+      <a href="/menu" class="cta-btn inline-block bg-brown text-cream font-semibold px-8 py-3.5 rounded-full shadow-lg hover:bg-accent hover:text-brown transition-all duration-300">
+        Khám phá Menu
+      </a>
+    </div>
+    {{else}}
+
+    <div class="space-y-5">
+      {{#each orders}}
+      <div class="order-card bg-white/70 rounded-2xl shadow-md overflow-hidden">
+        <details class="order-details">
+          <summary class="flex flex-wrap items-center justify-between gap-4 px-6 py-5">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6">
+              <div>
+                <span class="text-xs text-brown/50 block">Mã đơn hàng</span>
+                <span class="font-heading font-semibold text-brown">#{{this.orderId}}</span>
+              </div>
+              <div>
+                <span class="text-xs text-brown/50 block">Ngày đặt</span>
+                <span class="text-sm text-brown">{{this.createdAt}}</span>
+              </div>
+              <div>
+                <span class="text-xs text-brown/50 block">Tổng tiền</span>
+                <span class="font-semibold text-brown">{{formatVND this.total}}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="px-3 py-1.5 rounded-full text-xs font-medium {{this.statusColor}}">{{this.statusLabel}}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="chevron h-5 w-5 text-brown/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </summary>
+
+          <div class="px-6 pb-6 border-t border-brown/10 pt-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5 text-sm">
+              <div>
+                <span class="text-brown/50 block mb-1">Người nhận</span>
+                <span class="text-brown">{{this.customer.fullname}} · {{this.customer.phone}}</span>
+              </div>
+              <div>
+                <span class="text-brown/50 block mb-1">Địa chỉ giao hàng</span>
+                <span class="text-brown">{{this.customer.address}}</span>
+              </div>
+              <div>
+                <span class="text-brown/50 block mb-1">Phương thức thanh toán</span>
+                <span class="text-brown">{{this.paymentLabel}}</span>
+              </div>
+            </div>
+
+            <div class="border border-brown/10 rounded-xl overflow-hidden">
+              <table class="w-full text-left text-sm">
+                <thead>
+                  <tr class="bg-brown/5 text-brown/60 text-xs uppercase">
+                    <th class="px-4 py-2 font-medium">Món</th>
+                    <th class="px-4 py-2 font-medium text-center">SL</th>
+                    <th class="px-4 py-2 font-medium text-right">Đơn giá</th>
+                    <th class="px-4 py-2 font-medium text-right">Thành tiền</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-brown/5">
+                  {{#each this.items}}
+                  <tr>
+                    <td class="px-4 py-3 text-brown">{{this.name}}</td>
+                    <td class="px-4 py-3 text-center text-brown">{{this.quantity}}</td>
+                    <td class="px-4 py-3 text-right text-brown/70">{{formatVND this.price}}</td>
+                    <td class="px-4 py-3 text-right font-medium text-brown">{{formatVND this.lineTotal}}</td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+
+            <div class="flex flex-wrap items-end justify-between gap-4 mt-4 text-sm">
+              <div class="flex flex-wrap gap-3">
+                <button type="button"
+                  data-order-id="{{this._id}}"
+                  data-order-status="{{this.status}}"
+                  data-order-code="{{this.orderId}}"
+                  onclick="window.openChatWidget && window.openChatWidget({ orderId: '{{this._id}}', orderStatus: '{{this.status}}', orderCode: '{{this.orderId}}' })"
+                  class="px-5 py-2.5 rounded-full border border-brown/20 text-brown text-sm font-medium hover:bg-brown/5 transition-colors">
+                  Chat với cửa hàng
+                </button>
+                {{#if this.isCancellable}}
+                <button type="button" class="cancel-order-btn px-5 py-2.5 rounded-full border border-red-300 text-red-600 text-sm font-medium hover:bg-red-50 transition-colors" data-order-id="{{this._id}}">
+                  Hủy đơn hàng
+                </button>
+                {{/if}}
+              </div>
+
+              <div class="text-right">
+                <div class="text-brown/60">Tạm tính: <span class="text-brown font-medium">{{formatVND this.subtotal}}</span></div>
+                <div class="text-brown/60">Phí giao hàng: <span class="text-brown font-medium">{{formatVND this.shipping}}</span></div>
+                {{#if this.discount}}
+                <div class="text-green-600">Giảm giá: <span class="font-medium">-{{formatVND this.discount}}</span></div>
+                {{/if}}
+                <div class="text-accent font-heading font-bold text-lg mt-1">Tổng cộng: {{formatVND this.total}}</div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+      {{/each}}
+    </div>
+
+    {{/if}}
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.cancel-order-btn').forEach(function (btn) {
+      btn.addEventListener('click', async function (e) {
+        // preventDefault/stopPropagation không thật sự cần thiết ở đây (nút nằm ngoài <summary>,
+        // không làm đóng/mở khối chi tiết) — giữ lại cho chắc, phòng khi HTML thay đổi sau này.
+        e.preventDefault();
+        e.stopPropagation();
+
+        const orderId = btn.dataset.orderId;
+        const confirmed = window.confirm('Bạn chắc chắn muốn hủy đơn hàng này?');
+        if (!confirmed) return;
+
+        btn.disabled = true;
+        btn.textContent = 'Đang hủy...';
+
+        try {
+          const res = await fetch('/orders/' + orderId + '/cancel', { method: 'POST' });
+          const data = await res.json();
+
+          if (data.success) {
+            // Tải lại trang để trạng thái/nhãn màu cập nhật đồng bộ với server
+            window.location.reload();
+          } else {
+            alert(data.message || 'Không thể hủy đơn hàng.');
+            btn.disabled = false;
+            btn.textContent = 'Hủy đơn hàng';
+          }
+        } catch (err) {
+          console.error('Lỗi hủy đơn hàng:', err);
+          alert('Có lỗi xảy ra, vui lòng thử lại.');
+          btn.disabled = false;
+          btn.textContent = 'Hủy đơn hàng';
+        }
+      });
+    });
+  });
+</script>
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F

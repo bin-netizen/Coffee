@@ -3,8 +3,8 @@
   <nav class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
     <!-- Logo -->
     <a href="/" class="flex items-center gap-3">
-      <img src="/img/icon.png" alt="CoffeeWeb Logo" class="h-10 w-10 object-contain" />
-      <span class="font-heading text-2xl font-bold text-brown tracking-wide">CoffeeWeb</span>
+      <img src="/img/icon.svg" alt="CoffeeWeb Logo" class="h-10 w-10 object-contain" />
+      <span class="font-heading text-2xl font-bold text-brown tracking-wide">Coffee</span>
     </a>
 
     <!-- Desktop Menu -->
@@ -20,6 +20,18 @@
             {{#if (gt cartCount 10)}}10+{{else}}{{cartCount}}{{/if}}
           </span>
         </a>
+      </li>
+      <li>
+        {{#if isLoggedIn}}
+          <a href="/orders" class="nav-link {{#eq activePage 'orders'}}active{{/eq}} hover:text-accent transition-colors">Đơn hàng</a>
+        {{/if}}
+      </li>
+      <li>
+        {{#if isAdmin}}
+          <a href="/admin" class="nav-link hover:text-accent transition-colors flex items-center gap-1 text-accent font-medium">
+            ⚙️ Admin
+          </a>
+        {{/if}}
       </li>
       <li>
         {{#if isLoggedIn}}
@@ -51,7 +63,21 @@
     <li><a href="/about" class="block py-2 hover:text-accent transition-colors">About</a></li>
     <li><a href="/contact" class="block py-2 hover:text-accent transition-colors">Contact</a></li>
     <li><a href="/cart" class="block py-2 hover:text-accent transition-colors">Cart</a></li>
-    <li><a href="/login" class="block py-2 hover:text-accent transition-colors">Login</a></li>
+    {{#if isLoggedIn}}
+      <li><a href="/orders" class="block py-2 hover:text-accent transition-colors">Đơn hàng</a></li>
+    {{/if}}
+    {{#if isAdmin}}
+      <li><a href="/admin" class="block py-2 text-accent font-medium">⚙️ Admin</a></li>
+    {{/if}}
+    {{#if isLoggedIn}}
+      <li>
+        <form action="/logout" method="POST">
+          <button type="submit" class="block py-2 hover:text-accent transition-colors text-left w-full">Đăng xuất</button>
+        </form>
+      </li>
+    {{else}}
+      <li><a href="/login" class="block py-2 hover:text-accent transition-colors">Login</a></li>
+    {{/if}}
   </ul>
 </header>
 

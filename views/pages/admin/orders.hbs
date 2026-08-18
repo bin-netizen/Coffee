@@ -1,0 +1,66 @@
+<h1 class="font-heading text-3xl font-bold text-brown mb-6">Quản lý đơn hàng</h1>
+
+<div class="flex flex-wrap gap-2 mb-6">
+  <a href="/admin/orders" class="px-4 py-2 rounded-full text-sm font-medium {{#eq currentFilter 'all'}}bg-brown text-cream{{else}}bg-white border border-gray-200 text-brown{{/eq}}">Tất cả</a>
+  <a href="/admin/orders?status=pending" class="px-4 py-2 rounded-full text-sm font-medium {{#eq currentFilter 'pending'}}bg-brown text-cream{{else}}bg-white border border-gray-200 text-brown{{/eq}}">Chờ xử lý</a>
+  <a href="/admin/orders?status=confirmed" class="px-4 py-2 rounded-full text-sm font-medium {{#eq currentFilter 'confirmed'}}bg-brown text-cream{{else}}bg-white border border-gray-200 text-brown{{/eq}}">Đã xác nhận</a>
+  <a href="/admin/orders?status=shipping" class="px-4 py-2 rounded-full text-sm font-medium {{#eq currentFilter 'shipping'}}bg-brown text-cream{{else}}bg-white border border-gray-200 text-brown{{/eq}}">Đang giao</a>
+  <a href="/admin/orders?status=completed" class="px-4 py-2 rounded-full text-sm font-medium {{#eq currentFilter 'completed'}}bg-brown text-cream{{else}}bg-white border border-gray-200 text-brown{{/eq}}">Hoàn thành</a>
+  <a href="/admin/orders?status=cancelled" class="px-4 py-2 rounded-full text-sm font-medium {{#eq currentFilter 'cancelled'}}bg-brown text-cream{{else}}bg-white border border-gray-200 text-brown{{/eq}}">Đã huỷ</a>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+  <table class="w-full text-left text-sm">
+    <thead>
+      <tr class="bg-gray-50 text-gray-500 uppercase text-xs">
+        <th class="px-6 py-3 font-medium">Mã đơn</th>
+        <th class="px-6 py-3 font-medium">Khách hàng</th>
+        <th class="px-6 py-3 font-medium">SĐT</th>
+        <th class="px-6 py-3 font-medium">Tổng tiền</th>
+        <th class="px-6 py-3 font-medium">Thanh toán</th>
+        <th class="px-6 py-3 font-medium">Trạng thái</th>
+        <th class="px-6 py-3 font-medium">Hoàn tiền</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {{#each orders}}
+      <tr>
+        <td class="px-6 py-4 font-medium text-brown">#{{this.orderId}}</td>
+        <td class="px-6 py-4">{{this.customer.fullname}}</td>
+        <td class="px-6 py-4">{{this.customer.phone}}</td>
+        <td class="px-6 py-4 font-medium">{{formatVND this.total}}</td>        
+        <td class="px-6 py-4 capitalize">{{this.paymentMethod}}</td>
+        <td class="px-6 py-4">
+          <form action="/admin/orders/{{this._id}}/status" method="POST" class="inline-flex items-center gap-2">
+            <select name="status" onchange="this.form.submit()" class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs">
+              <option value="pending" {{#eq this.status 'pending'}}selected{{/eq}}>Chờ xử lý</option>
+              <option value="confirmed" {{#eq this.status 'confirmed'}}selected{{/eq}}>Đã xác nhận</option>
+              <option value="shipping" {{#eq this.status 'shipping'}}selected{{/eq}}>Đang giao</option>
+              <option value="completed" {{#eq this.status 'completed'}}selected{{/eq}}>Hoàn thành</option>
+              <option value="cancelled" {{#eq this.status 'cancelled'}}selected{{/eq}}>Đã huỷ</option>
+            </select>
+          </form>
+        </td>
+        <td class="px-6 py-4">
+          {{#if this.isRefunded}}
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-red-50 text-red-600">Đã hoàn tiền</span>
+          {{else}}
+            {{#eq this.status 'completed'}}
+            <form action="/admin/orders/{{this._id}}/refund" method="POST"
+                  onsubmit="return confirm('Xác nhận hoàn tiền đơn #{{this.orderId}}? Sẽ trừ {{formatVND this.total}} khỏi doanh thu.');">
+              <button type="submit" class="px-3 py-1.5 rounded-lg border border-red-300 text-red-600 text-xs font-medium hover:bg-red-50 transition-colors">
+                Hoàn tiền
+              </button>
+            </form>
+            {{else}}
+            <span class="text-xs text-gray-300">—</span>
+            {{/eq}}
+          {{/if}}
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="7" class="px-6 py-8 text-center text-gray-400">Không có đơn hàng nào.</td></tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

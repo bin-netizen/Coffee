@@ -1,5 +1,12 @@
 const express = require('express');
 const router = express.Router();
+// trong route xử lý trang chủ (routes/index.js)
+const Product = require('../models/Product');
+
+router.get('/', async (req, res) => {
+  const featuredProducts = await Product.find({ badge: 'best-seller', isActive: true }).limit(6).lean();
+  res.render('index', { featuredProducts });
+});
 
 // Trang chủ
 router.get('/', (req, res) => {

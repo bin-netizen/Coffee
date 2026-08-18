@@ -16,6 +16,11 @@ router.post('/cart/update', isAuthenticated, cartController.updateQuantity);
 // Xóa 1 sản phẩm khỏi giỏ hàng
 router.post('/cart/remove', isAuthenticated, cartController.removeItem);
 
+// Áp / gỡ mã giảm giá (chỉ preview trên giỏ hàng, chưa trừ lượt dùng thật)
+router.post('/cart/apply-coupon', isAuthenticated, cartController.applyDiscount);
+router.post('/cart/remove-coupon', isAuthenticated, cartController.removeDiscount);
+router.get('/cart/coupons', isAuthenticated, cartController.listAvailableCoupons);
+
 // Lấy dữ liệu giỏ hàng dạng JSON (dùng cho AJAX)
 router.get('/api/cart', isAuthenticated, cartController.getCartData);
 

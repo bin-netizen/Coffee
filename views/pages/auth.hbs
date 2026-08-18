@@ -1,0 +1,444 @@
+<style>
+  /* ===== Nền toàn trang: ảnh login.jpg + overlay tối để chữ đọc được ===== */
+  .auth-bg {
+    background-image: url('/img/login.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  .auth-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(0,0,0,0.75));
+  }
+
+  /* ===== Glass card: trong suốt + viền, theo yêu cầu "hiện đại" ===== */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  }
+
+  .glass-input {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #fff;
+    transition: all 0.3s ease;
+  }
+  .glass-input::placeholder { color: rgba(255,255,255,0.45); }
+  .glass-input:focus {
+    outline: none;
+    border-color: #c8a27a;
+    box-shadow: 0 0 0 3px rgba(200, 162, 122, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .glass-social-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    transition: all 0.25s ease;
+  }
+  .glass-social-btn:hover {
+    background: rgba(255,255,255,0.12);
+    border-color: #c8a27a;
+  }
+
+  .auth-btn { transition: all 0.3s ease; }
+  .auth-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  }
+
+  /* ===== Khu vực 2 panel cố định: Register = trái, Login = phải ===== */
+  #auth-stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 1100px;
+    min-height: 560px;
+  }
+
+  /* Mobile: xếp dọc, chỉ hiện form đang active, ẩn hoàn toàn hạt cà phê 3D
+     (lý do: tránh vừa vỡ layout vừa nặng GPU trên máy yếu - xem giải thích) */
+  @media (max-width: 1023px) {
+    #auth-stage { grid-template-columns: 1fr; }
+    #bean-stage { display: none !important; }
+    .panel-form { display: none; }
+    #auth-stage[data-mode="login"] #panel-login { display: block; }
+    #auth-stage[data-mode="register"] #panel-register { display: block; }
+  }
+
+  /* ===== Desktop: hạt cà phê 3D trượt qua lại ===== */
+  @media (min-width: 1024px) {
+  #bean-stage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    z-index: 20;
+    background: rgba(20, 14, 10, 0.72);   /* lớp nền tối phủ kín, che thật form bên dưới */
+    backdrop-filter: blur(14px);           /* hiệu ứng kính mờ - nhìn hiện đại hơn nền đặc trơn */
+    transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1), opacity 0.4s ease;
+  }
+    #auth-stage[data-mode="login"] #bean-stage    { transform: translateX(0%); }   /* bean ở TRÁI, che Register */
+    #auth-stage[data-mode="register"] #bean-stage { transform: translateX(100%); } /* bean chạy sang PHẢI, che Login */
+
+    /* Panel bị bean che thì tắt tương tác, tránh click xuyên qua khi đang bị phủ */
+    #auth-stage[data-mode="login"] #panel-register    { pointer-events: none; }
+    #auth-stage[data-mode="register"] #panel-login    { pointer-events: none; }
+  }
+
+  /* ===== Hiệu ứng mờ dần khi đang chuyển đổi (áp cho cả 2 form) ===== */
+  .panel-form {
+    transition: opacity 0.35s ease;
+  }
+  #auth-stage.is-transitioning .panel-form {
+    opacity: 0;
+  }
+</style>
+
+{{#if (eq mode "forgot-password")}}
+<section class="min-h-screen w-full flex items-center justify-center px-6 py-16 auth-bg relative">
+  <div class="absolute inset-0 auth-overlay"></div>
+  <div class="relative z-10 w-full max-w-md glass-card rounded-3xl p-8 sm:p-12">
+    <h1 class="font-heading text-3xl font-bold text-white mb-2">Quên mật khẩu</h1>
+    <p class="text-white/60 text-sm mb-8">Nhập email đã đăng ký, chúng tôi sẽ gửi mã xác thực để đặt lại mật khẩu.</p>
+
+    {{#if successMessage}}
+    <div class="bg-green-500/10 border border-green-400/40 text-green-200 text-sm rounded-lg px-4 py-3 mb-4">
+      {{successMessage}}
+    </div>
+    {{/if}}
+    {{#if error}}
+    <div class="bg-red-500/10 border border-red-400/40 text-red-200 text-sm rounded-lg px-4 py-3 mb-4">
+      {{error}}
+    </div>
+    {{/if}}
+
+    <form action="/forgot-password" method="POST" class="space-y-5">
+      <div>
+        <label for="fp-email" class="block text-sm font-medium text-white/80 mb-2">Email</label>
+        <input type="email" id="fp-email" name="email" placeholder="you@example.com"
+          class="glass-input w-full px-4 py-3 rounded-lg" required />
+      </div>
+      <button type="submit"
+        class="auth-btn w-full bg-accent text-brown font-semibold py-3.5 rounded-full shadow-lg hover:bg-white transition-all duration-300">
+        Gửi mã xác thực
+      </button>
+    </form>
+
+    <p class="text-white/60 text-sm mt-8 text-center">
+      <a href="/login" class="text-accent font-semibold hover:underline">Quay lại đăng nhập</a>
+    </p>
+  </div>
+</section>
+
+{{else}}
+{{#if (eq mode "reset-password")}}
+<section class="min-h-screen w-full flex items-center justify-center px-6 py-16 auth-bg relative">
+  <div class="absolute inset-0 auth-overlay"></div>
+  <div class="relative z-10 w-full max-w-md glass-card rounded-3xl p-8 sm:p-12">
+    <h1 class="font-heading text-3xl font-bold text-white mb-2">Đặt lại mật khẩu</h1>
+    <p class="text-white/60 text-sm mb-8">Nhập mã xác thực đã gửi tới email và mật khẩu mới.</p>
+
+    {{#if successMessage}}
+    <div class="bg-green-500/10 border border-green-400/40 text-green-200 text-sm rounded-lg px-4 py-3 mb-4">
+      {{successMessage}}
+    </div>
+    {{/if}}
+    {{#if error}}
+    <div class="bg-red-500/10 border border-red-400/40 text-red-200 text-sm rounded-lg px-4 py-3 mb-4">
+      {{error}}
+    </div>
+    {{/if}}
+
+    <form action="/reset-password" method="POST" class="space-y-5">
+      <input type="hidden" name="email" value="{{email}}" />
+      <div>
+        <label for="rp-otp" class="block text-sm font-medium text-white/80 mb-2">Mã xác thực (OTP)</label>
+        <input type="text" id="rp-otp" name="otp" placeholder="6 chữ số" maxlength="6" inputmode="numeric" pattern="[0-9]{6}"
+          class="glass-input w-full px-4 py-3 rounded-lg tracking-[0.5em] text-center" required />
+      </div>
+      <div>
+        <label for="rp-new" class="block text-sm font-medium text-white/80 mb-2">Mật khẩu mới</label>
+        <input type="password" id="rp-new" name="newPassword" placeholder="Tối thiểu 8 ký tự"
+          class="glass-input w-full px-4 py-3 rounded-lg" required minlength="8" />
+      </div>
+      <div>
+        <label for="rp-confirm" class="block text-sm font-medium text-white/80 mb-2">Nhập lại mật khẩu mới</label>
+        <input type="password" id="rp-confirm" name="confirmNewPassword" placeholder="••••••••"
+          class="glass-input w-full px-4 py-3 rounded-lg" required minlength="8" />
+      </div>
+      <button type="submit"
+        class="auth-btn w-full bg-accent text-brown font-semibold py-3.5 rounded-full shadow-lg hover:bg-white transition-all duration-300">
+        Đổi mật khẩu
+      </button>
+    </form>
+
+    <p class="text-white/60 text-sm mt-8 text-center">
+      Chưa nhận được mã? <a href="/forgot-password" class="text-accent font-semibold hover:underline">Gửi lại</a>
+    </p>
+  </div>
+</section>
+
+{{else}}
+<section class="min-h-screen w-full flex items-center justify-center px-6 py-16 auth-bg relative">
+  <div class="absolute inset-0 auth-overlay"></div>
+  <div id="auth-stage" class="relative z-10 rounded-3xl overflow-hidden" data-mode="{{mode}}">
+
+    <!-- ===== PANEL REGISTER (trái) ===== -->
+    <div id="panel-register" class="panel-form glass-card p-8 sm:p-12 flex flex-col justify-center">
+      <h1 class="font-heading text-3xl font-bold text-white mb-2">Tạo tài khoản</h1>
+
+      {{#if (eq mode "register")}}{{#if error}}
+      <div class="bg-red-500/10 border border-red-400/40 text-red-200 text-sm rounded-lg px-4 py-3 mb-4">
+        {{error}}
+      </div>
+      {{/if}}{{/if}}
+
+      <p class="text-white/60 text-sm mb-8">
+        Đã có tài khoản?
+        <a href="/login?redirect={{redirect}}" id="link-to-login" class="text-accent font-semibold hover:underline">Đăng nhập</a>
+      </p>
+
+      <form action="/register" method="POST" class="space-y-5">
+        <input type="hidden" name="redirect" value="{{redirect}}" />
+        <div>
+          <label for="fullname" class="block text-sm font-medium text-white/80 mb-2">Họ và tên</label>
+          <input type="text" id="fullname" name="fullname" placeholder="Nguyễn Văn A"
+            class="glass-input w-full px-4 py-3 rounded-lg" required />
+        </div>
+        <div>
+          <label for="reg-email" class="block text-sm font-medium text-white/80 mb-2">Email</label>
+          <input type="email" id="reg-email" name="email" placeholder="you@example.com"
+            class="glass-input w-full px-4 py-3 rounded-lg" required />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label for="reg-password" class="block text-sm font-medium text-white/80 mb-2">Mật khẩu</label>
+            <input type="password" id="reg-password" name="password" placeholder="••••••••"
+              class="glass-input w-full px-4 py-3 rounded-lg" required />
+          </div>
+          <div>
+            <label for="confirmPassword" class="block text-sm font-medium text-white/80 mb-2">Nhập lại</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••"
+              class="glass-input w-full px-4 py-3 rounded-lg" required />
+          </div>
+        </div>
+        <label class="flex items-start gap-2 text-sm text-white/70 cursor-pointer">
+          <input type="checkbox" name="terms" class="accent-accent w-4 h-4 mt-0.5" required />
+          <span>Tôi đồng ý với <a href="/terms" class="text-accent hover:underline">Điều khoản</a> và <a href="/privacy" class="text-accent hover:underline">Chính sách bảo mật</a></span>
+        </label>
+        <button type="submit"
+          class="auth-btn w-full bg-accent text-brown font-semibold py-3.5 rounded-full shadow-lg hover:bg-white transition-all duration-300">
+          Đăng ký
+        </button>
+      </form>
+
+      <div class="flex items-center gap-4 my-8">
+        <div class="flex-1 h-px bg-white/15"></div>
+        <span class="text-white/40 text-xs uppercase tracking-wide">Hoặc</span>
+        <div class="flex-1 h-px bg-white/15"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <button class="glass-social-btn flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium">Google</button>
+        <button class="glass-social-btn flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium">Facebook</button>
+      </div>
+    </div>
+
+    <!-- ===== PANEL LOGIN (phải) ===== -->
+    <div id="panel-login" class="panel-form glass-card p-8 sm:p-12 flex flex-col justify-center">
+      <h1 class="font-heading text-3xl font-bold text-white mb-2">Đăng nhập</h1>
+
+      {{#if (eq mode "login")}}
+        {{#if successMessage}}
+        <div class="bg-green-500/10 border border-green-400/40 text-green-200 text-sm rounded-lg px-4 py-3 mb-4">
+          {{successMessage}}
+        </div>
+        {{/if}}
+        {{#if error}}
+        <div class="bg-red-500/10 border border-red-400/40 text-red-200 text-sm rounded-lg px-4 py-3 mb-4">
+          {{error}}
+        </div>
+        {{/if}}
+      {{/if}}
+
+      <p class="text-white/60 text-sm mb-8">
+        Chưa có tài khoản?
+        <a href="/register?redirect={{redirect}}" id="link-to-register" class="text-accent font-semibold hover:underline">Đăng ký ngay</a>
+      </p>
+
+      <form action="/login" method="POST" class="space-y-5">
+        <input type="hidden" name="redirect" value="{{redirect}}" />
+        <div>
+          <label for="email" class="block text-sm font-medium text-white/80 mb-2">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com"
+            class="glass-input w-full px-4 py-3 rounded-lg" required />
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-white/80 mb-2">Mật khẩu</label>
+          <input type="password" id="password" name="password" placeholder="••••••••"
+            class="glass-input w-full px-4 py-3 rounded-lg" required />
+        </div>
+        <div class="flex items-center justify-between text-sm">
+          <label class="flex items-center gap-2 text-white/70 cursor-pointer">
+            <input type="checkbox" name="remember" class="accent-accent w-4 h-4" />
+            Ghi nhớ đăng nhập
+          </label>
+          <a href="/forgot-password" class="text-accent font-medium hover:underline">Quên mật khẩu?</a>
+        </div>
+        <button type="submit"
+          class="auth-btn w-full bg-accent text-brown font-semibold py-3.5 rounded-full shadow-lg hover:bg-white transition-all duration-300">
+          Đăng nhập
+        </button>
+      </form>
+
+      <div class="flex items-center gap-4 my-8">
+        <div class="flex-1 h-px bg-white/15"></div>
+        <span class="text-white/40 text-xs uppercase tracking-wide">Hoặc</span>
+        <div class="flex-1 h-px bg-white/15"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <button class="glass-social-btn flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium">Google</button>
+        <button class="glass-social-btn flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium">Facebook</button>
+      </div>
+    </div>
+
+    <!-- ===== HẠT CÀ PHÊ 3D — chỉ chạy trên desktop (≥1024px) ===== -->
+    <div id="bean-stage"></div>
+  </div>
+</section>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js'; // thêm dòng này
+
+  const stage = document.getElementById('auth-stage');
+  const beanContainer = document.getElementById('bean-stage');
+  const MODEL_PATH = '/models/coffee_bean.glb';
+  const TARGET_SIZE = 2.2;
+
+  // Không init Three.js trên mobile - bean-stage bị display:none nên clientWidth = 0,
+  // init ở đây sẽ ra lỗi chia cho 0 khi tính aspect ratio.
+  const isDesktop = window.matchMedia('(min-width: 1024px)').matches;
+
+  if (isDesktop) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      45, beanContainer.clientWidth / beanContainer.clientHeight, 0.1, 1000
+    );
+    camera.position.set(0, 0, 5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(beanContainer.clientWidth, beanContainer.clientHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    beanContainer.appendChild(renderer.domElement);
+
+    // Cho phép người dùng kéo chuột/vuốt để xoay hạt cà phê
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;   // xoay có độ trễ mượt, không giật cứng khi thả tay
+    controls.dampingFactor = 0.08;
+    controls.enableZoom = false;     // tránh xung đột với cuộn trang (scroll wheel)
+    controls.enablePan = false;      // không cho kéo lệch vị trí, chỉ xoay tại chỗ
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+    const dirLight = new THREE.DirectionalLight(0xffffff, 2.5);
+    dirLight.position.set(3, 5, 4);
+    scene.add(dirLight);
+    const fillLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    fillLight.position.set(-3, 2, -4);
+    scene.add(fillLight);
+
+    let beanModel = null;
+    new GLTFLoader().load(
+      MODEL_PATH,
+      (gltf) => {
+        beanModel = gltf.scene;
+        const box = new THREE.Box3().setFromObject(beanModel);
+        const size = box.getSize(new THREE.Vector3());
+        const center = box.getCenter(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const scaleFactor = TARGET_SIZE / maxDim;
+        beanModel.scale.setScalar(scaleFactor);
+        beanModel.position.sub(center.multiplyScalar(scaleFactor));
+        scene.add(beanModel);
+      },
+      undefined,
+      (err) => console.error('Lỗi load model 3D:', err)
+    );
+
+    let isVisible = true;
+    document.addEventListener('visibilitychange', () => {
+      isVisible = document.visibilityState === 'visible';
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (!isVisible) return;
+      if (beanModel) beanModel.rotation.y += 0.004; // auto-rotate khi không ai kéo
+      controls.update(); // thêm dòng này - bắt buộc để damping hoạt động
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      if (!beanContainer.clientWidth) return;
+      camera.aspect = beanContainer.clientWidth / beanContainer.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(beanContainer.clientWidth, beanContainer.clientHeight);
+    });
+  }
+
+  // ===== Chuyển đổi Login <-> Register: fade form + trượt hạt cà phê =====
+  function switchMode(target, pushUrl = true) {
+    if (stage.dataset.mode === target) return;
+
+    stage.classList.add('is-transitioning'); // fade cả 2 form về opacity 0
+
+    setTimeout(() => {
+      stage.dataset.mode = target; // đổi attribute -> CSS tự trigger transform trượt bean
+    }, 150);
+
+    setTimeout(() => {
+      stage.classList.remove('is-transitioning'); // fade form mới vào lại
+    }, 900);
+
+    if (pushUrl) {
+      const redirect = new URLSearchParams(window.location.search).get('redirect') || '/';
+      const url = `/${target}?redirect=${encodeURIComponent(redirect)}`;
+      history.pushState({ mode: target }, '', url);
+    }
+  }
+
+  document.getElementById('link-to-register')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchMode('register');
+  });
+  document.getElementById('link-to-login')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    switchMode('login');
+  });
+
+  // Hỗ trợ nút Back/Forward của browser
+  window.addEventListener('popstate', () => {
+    const path = window.location.pathname;
+    switchMode(path.includes('register') ? 'register' : 'login', false);
+  });
+</script>
+{{/if}}
+{{/if}}

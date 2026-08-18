@@ -1,391 +1,377 @@
 <style>
-  .filter-btn {
-    transition: all 0.3s ease;
-  }
-  .filter-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(75, 46, 46, 0.25);
-  }
-  .filter-btn.active {
-    background-color: #4b2e2e;
-    color: #D4CCB2;
-  }
-
-  .product-card {
-    transition: transform 0.35s ease, box-shadow 0.35s ease;
-  }
-  .product-card:hover {
-    transform: scale(1.04) translateY(-6px);
-    box-shadow: 0 20px 35px rgba(75, 46, 46, 0.25);
-  }
-
-  .add-cart-btn {
-    transition: all 0.3s ease;
-  }
-  .add-cart-btn:hover {
-    background-color: #4b2e2e;
-    letter-spacing: 0.5px;
-  }
-
-  .fade-in {
-    animation: fadeIn 0.8s ease both;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+  .filter-btn { transition: all 0.3s ease; }
+  .filter-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(75, 46, 46, 0.25); }
+  .filter-btn.active { background-color: #4b2e2e; color: #D4CCB2; }
+  .product-card { transition: transform 0.35s ease, box-shadow 0.35s ease; cursor: pointer; }
+  .product-card:hover { transform: scale(1.04) translateY(-6px); box-shadow: 0 20px 35px rgba(75, 46, 46, 0.25); }
+  .add-cart-btn { transition: all 0.3s ease; }
+  .add-cart-btn:hover { background-color: #4b2e2e; letter-spacing: 0.5px; }
+  .fade-in { animation: fadeIn 0.8s ease both; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  .option-pill { transition: all 0.2s ease; cursor: pointer; }
+  .option-pill.selected { background-color: #4b2e2e; color: #D4CCB2; border-color: #4b2e2e; }
+  .size-card { transition: all 0.2s ease; cursor: pointer; }
+  .size-card.selected { border-color: #c8a27a; background-color: rgba(200, 162, 122, 0.15); }
+  .topping-check { transition: all 0.2s ease; cursor: pointer; }
+  .topping-check.selected { border-color: #c8a27a; background-color: rgba(200, 162, 122, 0.15); }
+  .qty-btn { transition: all 0.25s ease; }
+  .qty-btn:hover { background-color: #4b2e2e; color: #D4CCB2; }
 </style>
 
-<!-- ============ HERO SECTION ============ -->
-<section
-  class="relative h-[60vh] md:h-[70vh] flex items-center justify-center text-center bg-cover bg-center"
-  style="background-image: url('/img/home.png');"
->
-  <div class="absolute inset-0 bg-brown/70"></div>
-  <div class="relative z-10 px-4 fade-in">
-    <h1 class="font-heading text-5xl md:text-6xl font-bold text-cream mb-4 drop-shadow-lg">
-      Our Menu
-    </h1>
-    <p class="text-cream/90 text-lg md:text-xl font-light tracking-wide">
-      Discover our delicious drinks
-    </p>
-  </div>
+<section class="relative w-full h-auto mt-[70px]">
+  <img src="/img/menu.jpg" alt="Menu" class="w-full h-auto object-contain">
 </section>
+
 
 <!-- ============ CATEGORY FILTER ============ -->
 <section class="max-w-7xl mx-auto px-6 py-12">
   <div class="flex flex-wrap justify-center gap-4 mb-12" id="filterTabs">
-    <button class="filter-btn active px-6 py-2.5 rounded-full border-2 border-brown font-medium" data-filter="all">
-      All
-    </button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="coffee">
-      Coffee
-    </button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="tea">
-      Tea
-    </button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="dessert">
-      Dessert
-    </button>
+    <button class="filter-btn active px-6 py-2.5 rounded-full border-2 border-brown font-medium" data-filter="all">All</button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="coffee">Coffee</button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="tea">Tea</button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="dessert">Dessert</button>
   </div>
 
-  <!-- ============ PRODUCT GRID ============ -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid">
+  {{#if products.length}}
+<!-- ============ PRODUCT GRID (render động từ MongoDB) ============ -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid">
+  {{#each products}}
+  <div class="product-card group relative bg-white/70 backdrop-blur-sm rounded-3xl overflow-hidden
+              border border-brown/10 shadow-md hover:shadow-2xl hover:-translate-y-1
+              transition-all duration-300 ease-out"
+       data-category="{{this.category}}"
+       data-id="{{this.productId}}"
+       data-name="{{this.name}}"
+       data-price="{{this.basePrice}}"
+       data-flavor="{{this.flavor}}">
 
-    {{! Product 1 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="espresso" data-name="Espresso" data-price="3.00">
-      <span class="absolute top-4 left-4 bg-accent text-brown text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
-        Best Seller
+    <!-- Badge -->
+    {{#unless (eq this.badge 'none')}}
+      <span class="absolute top-4 left-4 z-10 text-xs font-bold px-3 py-1.5 rounded-full
+                    shadow-md backdrop-blur-sm
+                    {{#if (eq this.badge 'best-seller')}}bg-accent/90 text-brown{{else}}bg-brown/90 text-cream{{/if}}">
+        {{#if (eq this.badge 'best-seller')}}🔥 Best Seller{{else}}✨ New{{/if}}
       </span>
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Espresso" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Espresso</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$3.00</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
+    {{/unless}}
+
+    <!-- Image with zoom-on-hover -->
+    <div class="relative overflow-hidden aspect-[4/3]">
+      <img src="{{this.image}}" alt="{{this.name}}"
+           class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent"></div>
+
+      <!-- Quick add button — hiện khi hover, gọn hơn nút full-width bên dưới -->
+      <button type="button"
+              class="add-cart-btn absolute bottom-4 right-4 w-11 h-11 flex items-center justify-center
+                     bg-accent text-brown rounded-full shadow-lg
+                     opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0
+                     transition-all duration-300 hover:scale-110">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m-10 0a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z" />
+        </svg>
+      </button>
     </div>
 
-    {{! Product 2 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="latte" data-name="Latte" data-price="4.00">
-      <span class="absolute top-4 left-4 bg-brown text-cream text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
-        New
-      </span>
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Latte" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Latte</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$4.00</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
+    <!-- Content -->
+    <div class="p-5">
+      {{#if this.flavor}}
+        <span class="inline-block text-[11px] uppercase tracking-wide text-brown/50 font-semibold mb-1">
+          {{this.flavor}}
+        </span>
+      {{/if}}
+
+      <h3 class="font-heading text-lg font-semibold text-brown leading-snug mb-3">
+        {{this.name}}
+      </h3>
+
+      <div class="flex items-center justify-between">
+        <span class="text-xl font-bold text-brown">{{formatVND this.basePrice}}</span>
+        <button class="add-cart-btn sm:hidden bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md active:scale-95 transition-transform"
+                type="button">
+          Thêm
+        </button>
       </div>
     </div>
-
-    {{! Product 3 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="cappuccino" data-name="Cappuccino" data-price="4.50">
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Cappuccino" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Cappuccino</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$4.50</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 4 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="mocha" data-name="Mocha" data-price="4.80">
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Mocha" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Mocha</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$4.80</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 5 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="coffee" data-id="americano" data-name="Americano" data-price="3.50">
-      <span class="absolute top-4 left-4 bg-accent text-brown text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
-        Best Seller
-      </span>
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Americano" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Americano</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$3.50</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 6 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="tea" data-id="green-tea" data-name="Green Tea" data-price="3.20">
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Green Tea" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Green Tea</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$3.20</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 7 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="tea" data-id="milk-tea" data-name="Milk Tea" data-price="3.80">
-      <span class="absolute top-4 left-4 bg-brown text-cream text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
-        New
-      </span>
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Milk Tea" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Milk Tea</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$3.80</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 8 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="tea" data-id="peach-tea" data-name="Peach Tea" data-price="3.60">
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Peach Tea" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Peach Tea</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$3.60</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 9 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="dessert" data-id="tiramisu" data-name="Tiramisu" data-price="5.50">
-      <span class="absolute top-4 left-4 bg-accent text-brown text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
-        Best Seller
-      </span>
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Tiramisu" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Tiramisu</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$5.50</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 10 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="dessert" data-id="cheesecake" data-name="Cheesecake" data-price="5.00">
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Cheesecake" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Cheesecake</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$5.00</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 11 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="dessert" data-id="chocolate-cake" data-name="Chocolate Cake" data-price="6.00">
-      <span class="absolute top-4 left-4 bg-brown text-cream text-xs font-bold px-3 py-1 rounded-full shadow-md z-10">
-        New
-      </span>
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Chocolate Cake" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Chocolate Cake</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$6.00</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
-    {{! Product 12 }}
-    <div class="product-card bg-white/60 rounded-2xl overflow-hidden shadow-lg relative" data-category="dessert" data-id="croissant" data-name="Croissant" data-price="3.90">
-      <div class="overflow-hidden">
-        <img src="/img/latte.png" alt="Croissant" class="w-full h-56 object-cover" />
-      </div>
-      <div class="p-5">
-        <h3 class="font-heading text-xl font-semibold mb-1">Croissant</h3>
-        <div class="text-accent text-sm mb-2">⭐⭐⭐⭐</div>
-        <div class="flex items-center justify-between">
-          <span class="text-lg font-bold text-brown">$3.90</span>
-          <button type="button" class="add-cart-btn bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md hover:text-cream">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    </div>
-
   </div>
+  {{/each}}
+</div>
+{{else}}
+<div class="text-center py-20">
+  <p class="text-brown/60">Chưa có sản phẩm nào. Vui lòng quay lại sau.</p>
+</div>
+{{/if}}
 </section>
+{{! ============ PRODUCT DETAIL MODAL ============ }}
+<div id="productModal" class="fixed inset-0 z-[100] hidden items-center justify-center px-4 py-8">
+  <div id="productModalOverlay" class="absolute inset-0 bg-brown/70 backdrop-blur-sm"></div>
+  <div class="relative bg-cream w-full max-w-2xl rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="p-6 sm:p-8">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h3 id="modalProductName" class="font-heading text-2xl font-bold text-brown">Tên sản phẩm</h3>
+          <p id="modalProductFlavor" class="text-brown/70 text-sm mt-2 leading-relaxed">Mô tả hương vị</p>
+        </div>
+        <button id="closeProductModalBtn" type="button" class="text-brown/50 hover:text-brown transition-colors flex-shrink-0 ml-4" aria-label="Đóng">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <img id="modalProductImage" src="/img/latte.png" alt="" class="w-full h-48 object-cover rounded-xl mb-6" />
+
+      <div id="modalDrinkOptions">
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-brown mb-3">Kích cỡ</label>
+          <div class="grid grid-cols-3 gap-3" id="sizeOptions">
+            <div class="size-card border-2 border-brown/20 rounded-xl p-3 text-center" data-value="S" data-modifier="0">
+              <div class="font-heading font-semibold text-brown">S</div>
+              <div class="text-xs text-brown/60 mt-1">240-300ml</div>
+            </div>
+            <div class="size-card border-2 border-brown/20 rounded-xl p-3 text-center" data-value="M" data-modifier="10000">
+              <div class="font-heading font-semibold text-brown">M</div>
+              <div class="text-xs text-brown/60 mt-1">360-450ml</div>
+              <div class="text-xs text-accent font-medium mt-0.5">+10.000₫</div>
+            </div>
+            <div class="size-card border-2 border-brown/20 rounded-xl p-3 text-center" data-value="L" data-modifier="20000">
+              <div class="font-heading font-semibold text-brown">L</div>
+              <div class="text-xs text-brown/60 mt-1">500-600ml</div>
+              <div class="text-xs text-accent font-medium mt-0.5">+20.000₫</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-brown mb-3">Đá</label>
+          <div class="flex flex-wrap gap-2" id="iceOptions">
+            <div class="option-pill border-2 border-brown/20 rounded-full px-4 py-2 text-sm text-brown" data-value="normal">Đá bình thường</div>
+            <div class="option-pill border-2 border-brown/20 rounded-full px-4 py-2 text-sm text-brown" data-value="none">Không đá</div>
+            <div class="option-pill border-2 border-brown/20 rounded-full px-4 py-2 text-sm text-brown" data-value="separate">Đá riêng</div>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-brown mb-3">Đường</label>
+          <div class="flex flex-wrap gap-2" id="sugarOptions">
+            <div class="option-pill border-2 border-brown/20 rounded-full px-4 py-2 text-sm text-brown" data-value="normal">100% đường</div>
+            <div class="option-pill border-2 border-brown/20 rounded-full px-4 py-2 text-sm text-brown" data-value="less50">Giảm 50%</div>
+            <div class="option-pill border-2 border-brown/20 rounded-full px-4 py-2 text-sm text-brown" data-value="less70">Giảm 70%</div>
+            <div class="option-pill border-2 border-brown/20 rounded-full px-4 py-2 text-sm text-brown" data-value="none">Không đường</div>
+            <div class="option-pill border-2 border-brown/20 rounded-full px-4 py-2 text-sm text-brown" data-value="extra">Thêm đường</div>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-brown mb-3">Topping (tuỳ chọn)</label>
+          <div class="grid grid-cols-2 gap-3" id="toppingOptions">
+  {{#each toppings}}
+  <div class="topping-check border-2 border-brown/20 rounded-xl px-4 py-3 flex items-center justify-between" data-value="{{this._id}}" data-price="{{this.price}}">
+    <span class="text-sm text-brown">{{this.name}}</span><span class="text-xs text-accent font-medium">+{{formatVND this.price}}</span>
+  </div>
+  {{/each}}
+</div>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label for="modalNote" class="block text-sm font-semibold text-brown mb-2">Ghi chú</label>
+        <textarea id="modalNote" rows="2" maxlength="200" placeholder="Ví dụ: ít đá, không ống hút..." class="w-full px-4 py-3 rounded-lg border border-brown/20 bg-white text-brown placeholder-brown/40 text-sm resize-none"></textarea>
+      </div>
+
+      <div class="flex items-center justify-between border-t border-brown/10 pt-6">
+        <div class="flex items-center gap-3">
+          <button id="modalQtyDecrease" type="button" class="qty-btn w-9 h-9 flex items-center justify-center rounded-full border border-brown text-brown font-bold">−</button>
+          <span id="modalQtyValue" class="w-6 text-center font-semibold text-brown">1</span>
+          <button id="modalQtyIncrease" type="button" class="qty-btn w-9 h-9 flex items-center justify-center rounded-full border border-brown text-brown font-bold">+</button>
+        </div>
+        <span id="modalTotalPrice" class="font-heading text-2xl font-bold text-accent">0₫</span>
+      </div>
+
+      <button id="modalAddToCartBtn" type="button" class="w-full mt-6 bg-brown text-cream font-semibold py-3.5 rounded-full shadow-lg hover:bg-accent hover:text-brown transition-all duration-300">
+        Thêm vào giỏ hàng
+      </button>
+    </div>
+  </div>
+</div>
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const filterBtns = document.querySelectorAll('.filter-btn');
     const products = document.querySelectorAll('#productGrid > div');
-    const cartBadge = document.getElementById('cartBadge');
 
-    function updateCartBadge(count) {
-      if (!cartBadge) return;
-      const safeCount = Number(count) || 0;
-      cartBadge.textContent = safeCount > 10 ? '10+' : safeCount;
-    }
-
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active', 'bg-brown', 'text-cream'));
+    filterBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        filterBtns.forEach(function (b) { b.classList.remove('active', 'bg-brown', 'text-cream'); });
         btn.classList.add('active', 'bg-brown', 'text-cream');
-
         const filter = btn.dataset.filter;
-        products.forEach(product => {
-          if (filter === 'all' || product.dataset.category === filter) {
-            product.style.display = '';
-          } else {
-            product.style.display = 'none';
-          }
+        products.forEach(function (product) {
+          product.style.display = (filter === 'all' || product.dataset.category === filter) ? '' : 'none';
         });
       });
     });
 
-    // ====== ADD TO CART ======
-    document.querySelectorAll('.add-cart-btn').forEach(function (btn) {
-      btn.addEventListener('click', async function () {
-        const card = btn.closest('.product-card');
- 
-        const payload = {
-          productId: card.dataset.id,
-          name: card.dataset.name,
-          price: parseFloat(card.dataset.price),
-          quantity: 1
-        };
- 
-        // Disable nút tạm thời để tránh double-click
-        btn.disabled = true;
-        const originalText = btn.textContent;
-        btn.textContent = 'Đang thêm...';
- 
-        try {
-          const res = await fetch('/cart/add', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
- 
-          // Chưa đăng nhập -> middleware trả về 401 kèm redirectUrl
-          if (res.status === 401) {
-            const data = await res.json();
-            window.location.href = data.redirectUrl; // chuyển sang /login?redirect=/menu
-            return;
-          }
- 
-          const data = await res.json();
- 
-          if (data.success) {
-            updateCartBadge(data.totalQuantity);
-            btn.textContent = 'Đã thêm ✓';
-            setTimeout(function () {
-              btn.textContent = originalText;
-              btn.disabled = false;
-            }, 1200);
-          } else {
-            alert(data.message || 'Có lỗi xảy ra.');
-            btn.textContent = originalText;
-            btn.disabled = false;
-          }
- 
-        } catch (err) {
-          console.error('Lỗi khi thêm vào giỏ hàng:', err);
-          btn.textContent = originalText;
-          btn.disabled = false;
-        }
+    const modal = document.getElementById('productModal');
+    const modalOverlay = document.getElementById('productModalOverlay');
+    const closeModalBtn = document.getElementById('closeProductModalBtn');
+    const modalDrinkOptions = document.getElementById('modalDrinkOptions');
+    const modalProductName = document.getElementById('modalProductName');
+    const modalProductFlavor = document.getElementById('modalProductFlavor');
+    const modalProductImage = document.getElementById('modalProductImage');
+    const modalNote = document.getElementById('modalNote');
+    const modalQtyValue = document.getElementById('modalQtyValue');
+    const modalTotalPrice = document.getElementById('modalTotalPrice');
+    const modalAddToCartBtn = document.getElementById('modalAddToCartBtn');
+
+    let currentProduct = null;
+    let currentQty = 1;
+    let selectedSize = 'S';
+    let selectedIce = 'normal';
+    let selectedSugar = 'normal';
+    let selectedToppings = [];
+
+    function resetModalSelections() {
+      currentQty = 1;
+      selectedSize = 'S'; selectedIce = 'normal'; selectedSugar = 'normal'; selectedToppings = [];
+      modalNote.value = '';
+      modalQtyValue.textContent = '1';
+      document.querySelectorAll('.size-card').forEach(function (el) { el.classList.remove('selected'); });
+      document.querySelector('.size-card[data-value="S"]').classList.add('selected');
+      document.querySelectorAll('#iceOptions .option-pill').forEach(function (el) { el.classList.remove('selected'); });
+      document.querySelector('#iceOptions .option-pill[data-value="normal"]').classList.add('selected');
+      document.querySelectorAll('#sugarOptions .option-pill').forEach(function (el) { el.classList.remove('selected'); });
+      document.querySelector('#sugarOptions .option-pill[data-value="normal"]').classList.add('selected');
+      document.querySelectorAll('.topping-check').forEach(function (el) { el.classList.remove('selected'); });
+    }
+
+    function calculateModalPrice() {
+      if (!currentProduct) return 0;
+      let price = currentProduct.price;
+      if (currentProduct.category !== 'dessert') {
+        const sizeCard = document.querySelector('.size-card[data-value="' + selectedSize + '"]');
+        price += parseFloat(sizeCard.dataset.modifier);
+        selectedToppings.forEach(function (v) {
+          const el = document.querySelector('.topping-check[data-value="' + v + '"]');
+          if (el) price += parseFloat(el.dataset.price);
+        });
+      }
+      return price * currentQty;
+    }
+
+    function updateModalTotal() {
+      modalTotalPrice.textContent = Math.round(calculateModalPrice()).toLocaleString('vi-VN') + '₫';
+    }
+
+    function openProductModal(card) {
+      currentProduct = {
+        id: card.dataset.id, name: card.dataset.name, price: parseFloat(card.dataset.price),
+        category: card.dataset.category, image: card.querySelector('img').src
+      };
+      modalProductName.textContent = currentProduct.name;
+      modalProductFlavor.textContent = card.dataset.flavor || '';
+      modalProductImage.src = currentProduct.image;
+      modalProductImage.alt = currentProduct.name;
+      modalDrinkOptions.style.display = currentProduct.category === 'dessert' ? 'none' : 'block';
+      resetModalSelections();
+      updateModalTotal();
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeProductModal() {
+      modal.classList.add('hidden'); modal.classList.remove('flex');
+      document.body.style.overflow = ''; currentProduct = null;
+    }
+
+    products.forEach(function (card) { card.addEventListener('click', function () { openProductModal(card); }); });
+    closeModalBtn.addEventListener('click', closeProductModal);
+    modalOverlay.addEventListener('click', closeProductModal);
+
+    document.querySelectorAll('.size-card').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.querySelectorAll('.size-card').forEach(function (s) { s.classList.remove('selected'); });
+        el.classList.add('selected'); selectedSize = el.dataset.value; updateModalTotal();
       });
     });
- 
-    // ====== CẬP NHẬT BADGE GIỎ HÀNG REALTIME ======
-    function updateCartBadge(count) {
-      const badge = document.getElementById('cartBadge');
-      if (!badge) return;
-      badge.textContent = count > 10 ? '10+' : count;
-    }
- 
+
+    document.querySelectorAll('#iceOptions .option-pill').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.querySelectorAll('#iceOptions .option-pill').forEach(function (s) { s.classList.remove('selected'); });
+        el.classList.add('selected'); selectedIce = el.dataset.value;
+      });
+    });
+
+    document.querySelectorAll('#sugarOptions .option-pill').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.querySelectorAll('#sugarOptions .option-pill').forEach(function (s) { s.classList.remove('selected'); });
+        el.classList.add('selected'); selectedSugar = el.dataset.value;
+      });
+    });
+
+    document.querySelectorAll('.topping-check').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.stopPropagation();
+        el.classList.toggle('selected');
+        const value = el.dataset.value;
+        if (el.classList.contains('selected')) { selectedToppings.push(value); }
+        else { selectedToppings = selectedToppings.filter(function (t) { return t !== value; }); }
+        updateModalTotal();
+      });
+    });
+
+    document.getElementById('modalQtyIncrease').addEventListener('click', function (e) {
+      e.stopPropagation(); currentQty += 1; modalQtyValue.textContent = currentQty; updateModalTotal();
+    });
+    document.getElementById('modalQtyDecrease').addEventListener('click', function (e) {
+      e.stopPropagation(); currentQty = Math.max(1, currentQty - 1); modalQtyValue.textContent = currentQty; updateModalTotal();
+    });
+
+    modalAddToCartBtn.addEventListener('click', async function (e) {
+      e.stopPropagation();
+      if (!currentProduct) return;
+
+      const payload = {
+        productId: currentProduct.id, size: selectedSize, ice: selectedIce, sugarLevel: selectedSugar,
+        toppings: selectedToppings, note: modalNote.value.trim(), quantity: currentQty
+      };
+
+      modalAddToCartBtn.disabled = true;
+      const originalText = modalAddToCartBtn.textContent;
+      modalAddToCartBtn.textContent = 'Đang thêm...';
+
+      try {
+        const res = await fetch('/cart/add', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+        });
+
+        if (res.status === 401) {
+          const data = await res.json();
+          window.location.href = data.redirectUrl;
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.success) {
+          if (window.updateCartBadge) window.updateCartBadge(data.totalQuantity);
+          modalAddToCartBtn.textContent = 'Đã thêm ✓';
+          setTimeout(function () {
+            closeProductModal();
+            modalAddToCartBtn.textContent = originalText;
+            modalAddToCartBtn.disabled = false;
+          }, 800);
+        } else {
+          alert(data.message || 'Có lỗi xảy ra.');
+          modalAddToCartBtn.textContent = originalText;
+          modalAddToCartBtn.disabled = false;
+        }
+      } catch (err) {
+        console.error('Lỗi khi thêm vào giỏ hàng:', err);
+        modalAddToCartBtn.textContent = originalText;
+        modalAddToCartBtn.disabled = false;
+      }
+    });
   });
 </script>
- 

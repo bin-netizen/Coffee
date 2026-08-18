@@ -8,11 +8,20 @@
   }
 
   .info-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    border: 1px solid rgba(75, 46, 46, 0.08);
   }
   .info-card:hover {
     transform: translateY(-6px);
     box-shadow: 0 15px 30px rgba(75, 46, 46, 0.2);
+    border-color: rgba(200, 162, 122, 0.5);
+  }
+  .info-icon-ring {
+    transition: box-shadow 0.3s ease;
+    box-shadow: 0 0 0 0 rgba(200, 162, 122, 0.4);
+  }
+  .info-card:hover .info-icon-ring {
+    box-shadow: 0 0 0 6px rgba(200, 162, 122, 0.15);
   }
 
   .contact-input {
@@ -45,22 +54,40 @@
   .faq-icon {
     transition: transform 0.3s ease;
   }
+  .faq-item {
+    border: 1px solid rgba(75, 46, 46, 0.06);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .faq-item:hover, .faq-item[open] {
+    border-color: rgba(200, 162, 122, 0.5);
+    box-shadow: 0 8px 20px rgba(75, 46, 46, 0.12);
+  }
+  .hero-bg { background-attachment: fixed; }
+  @media (max-width: 768px) { .hero-bg { background-attachment: scroll; } }
 </style>
 
 <!-- ============ HERO SECTION ============ -->
 <section
-  class="relative h-[45vh] md:h-[55vh] flex items-center justify-center text-center bg-cover bg-center"
-  style="background-image: url('/img/home.png');"
->
-  <div class="absolute inset-0 bg-gradient-to-b from-brown/70 via-brown/60 to-brown/85"></div>
-  <div class="relative z-10 px-4 fade-up">
-    <span class="text-accent font-semibold tracking-widest uppercase text-sm">Kết nối với chúng tôi</span>
-    <h1 class="font-heading text-5xl md:text-6xl font-bold text-cream mt-4 mb-4 drop-shadow-lg">
+  class="hero-bg relative h-screen min-h-[560px] max-h-[880px] flex items-start justify-center text-center bg-cover bg-center overflow-hidden pt-32 md:pt-40"
+  style="background-image: url('/img/contact.jpg');"
+>  <div class="absolute inset-x-0 top-0 h-72 md:h-80" style="background: linear-gradient(to bottom, rgba(43,26,20,0.78) 0%, rgba(43,26,20,0.4) 55%, transparent 100%);"></div>
+
+  <div class="relative z-10 px-6 max-w-3xl fade-up">
+    <span class="tag-chip inline-block text-accent font-semibold uppercase text-xs md:text-sm border border-accent/50 rounded-full px-4 py-1.5 backdrop-blur-sm">
+      Kết nối với chúng tôi
+    </span>
+    <h1 class="font-heading text-5xl md:text-7xl font-bold text-cream mt-5 mb-4 drop-shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
       Contact Us
     </h1>
-    <p class="text-cream/90 text-lg md:text-xl font-light tracking-wide max-w-xl mx-auto">
+    <p class="text-cream/95 text-base md:text-xl font-light tracking-wide drop-shadow-md">
       Chúng tôi luôn sẵn sàng lắng nghe bạn
     </p>
+  </div>
+
+  <div class="scroll-cue absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-cream/80">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
   </div>
 </section>
 
@@ -69,7 +96,7 @@
   <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 -mt-24 md:-mt-28 relative z-10">
 
     <div class="info-card bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-xl">
-      <div class="w-14 h-14 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-4">
+      <div class="info-icon-ring w-14 h-14 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z" />
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -80,23 +107,23 @@
     </div>
 
     <div class="info-card bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-xl">
-      <div class="w-14 h-14 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-4">
+      <div class="info-icon-ring w-14 h-14 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
         </svg>
       </div>
       <h3 class="font-heading text-lg font-semibold mb-2">Email</h3>
-      <p class="text-brown/70 text-sm leading-relaxed">hello@coffeeweb.com<br />support@coffeeweb.com</p>
+      <p class="text-brown/70 text-sm leading-relaxed">cfxc@coffeeweb.com<br />zaaabao10112005@gmail.com</p>
     </div>
 
     <div class="info-card bg-white/80 backdrop-blur-sm rounded-2xl p-8 text-center shadow-xl">
-      <div class="w-14 h-14 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-4">
+      <div class="info-icon-ring w-14 h-14 flex items-center justify-center bg-accent/20 rounded-full mx-auto mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-brown" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
         </svg>
       </div>
       <h3 class="font-heading text-lg font-semibold mb-2">Hotline</h3>
-      <p class="text-brown/70 text-sm leading-relaxed">+84 123 456 789<br />8:00 - 22:00 mỗi ngày</p>
+      <p class="text-brown/70 text-sm leading-relaxed">+84 965 336 670<br />8:00 - 22:00 mỗi ngày</p>
     </div>
 
   </div>
@@ -115,73 +142,90 @@
         sẽ phản hồi bạn trong thời gian sớm nhất.
       </p>
 
-      <form action="/contact" method="POST" class="space-y-5">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <div id="contactFormWrapper">
+        <form id="contactForm" action="/contact" method="POST" class="space-y-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label for="name" class="block text-sm font-medium text-brown mb-2">Họ và tên</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Nguyễn Văn A"
+                class="contact-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white/70 text-brown placeholder-brown/40"
+                required
+              />
+            </div>
+            <div>
+              <label for="email" class="block text-sm font-medium text-brown mb-2">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="you@example.com"
+                class="contact-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white/70 text-brown placeholder-brown/40"
+                required
+              />
+            </div>
+          </div>
+
           <div>
-            <label for="name" class="block text-sm font-medium text-brown mb-2">Họ và tên</label>
+            <label for="subject" class="block text-sm font-medium text-brown mb-2">Chủ đề</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              placeholder="Nguyễn Văn A"
+              id="subject"
+              name="subject"
+              placeholder="Đặt bàn / Góp ý / Hợp tác..."
               class="contact-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white/70 text-brown placeholder-brown/40"
-              required
             />
           </div>
+
           <div>
-            <label for="email" class="block text-sm font-medium text-brown mb-2">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="you@example.com"
-              class="contact-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white/70 text-brown placeholder-brown/40"
+            <label for="message" class="block text-sm font-medium text-brown mb-2">Nội dung</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              placeholder="Nhập nội dung tin nhắn của bạn..."
+              class="contact-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white/70 text-brown placeholder-brown/40 resize-none"
               required
-            />
+            ></textarea>
           </div>
-        </div>
 
-        <div>
-          <label for="subject" class="block text-sm font-medium text-brown mb-2">Chủ đề</label>
-          <input
-            type="text"
-            id="subject"
-            name="subject"
-            placeholder="Đặt bàn / Góp ý / Hợp tác..."
-            class="contact-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white/70 text-brown placeholder-brown/40"
-          />
-        </div>
+          <p id="contactError" class="text-red-600 text-sm hidden"></p>
 
-        <div>
-          <label for="message" class="block text-sm font-medium text-brown mb-2">Nội dung</label>
-          <textarea
-            id="message"
-            name="message"
-            rows="5"
-            placeholder="Nhập nội dung tin nhắn của bạn..."
-            class="contact-input w-full px-4 py-3 rounded-lg border border-brown/20 bg-white/70 text-brown placeholder-brown/40 resize-none"
-            required
-          ></textarea>
-        </div>
+          <button
+            id="submitContactBtn"
+            type="submit"
+            class="submit-btn bg-brown text-cream font-semibold px-8 py-3.5 rounded-full shadow-lg hover:bg-accent hover:text-brown transition-all duration-300"
+          >
+            Gửi tin nhắn
+          </button>
+        </form>
+      </div>
 
-        <button
-          type="submit"
-          class="submit-btn bg-brown text-cream font-semibold px-8 py-3.5 rounded-full shadow-lg hover:bg-accent hover:text-brown transition-all duration-300"
-        >
-          Gửi tin nhắn
-        </button>
-      </form>
+      <!-- Màn hình xác nhận, hiện ra thay cho form sau khi gửi thành công -->
+      <div id="contactSuccessView" class="hidden fade-up text-center py-10 bg-white/60 rounded-2xl">
+        <div class="w-16 h-16 flex items-center justify-center bg-green-100 rounded-full mx-auto mb-5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 class="font-heading text-2xl font-bold text-brown mb-2">Đã gửi tin nhắn thành công!</h3>
+        <p class="text-brown/70 max-w-sm mx-auto px-4" id="contactSuccessMessage">
+          Cảm ơn bạn đã liên hệ! Chúng tôi đã ghi nhận tin nhắn và sẽ phản hồi sớm nhất.
+        </p>
+      </div>
     </div>
 
     <!-- Map + Hours -->
     <div class="fade-up space-y-8">
       <div class="rounded-2xl overflow-hidden shadow-xl h-[320px]">
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4!2d106.7!3d10.77!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1svi!2s!4v1"
+          src="https://www.openstreetmap.org/export/embed.html?bbox=106.68%2C10.75%2C106.72%2C10.79&layer=mapnik"
           width="100%"
           height="100%"
           style="border:0;"
-          allowfullscreen=""
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
           title="CoffeeWeb Location"
@@ -257,3 +301,58 @@
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const contactForm = document.getElementById('contactForm');
+    const contactFormWrapper = document.getElementById('contactFormWrapper');
+    const contactSuccessView = document.getElementById('contactSuccessView');
+    const contactSuccessMessage = document.getElementById('contactSuccessMessage');
+    const contactError = document.getElementById('contactError');
+    const submitBtn = document.getElementById('submitContactBtn');
+
+    contactForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      contactError.classList.add('hidden');
+
+      const payload = {
+        name: document.getElementById('name').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        subject: document.getElementById('subject').value.trim(),
+        message: document.getElementById('message').value.trim()
+      };
+
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Đang gửi...';
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          contactSuccessMessage.textContent = data.message;
+          contactFormWrapper.classList.add('hidden');
+          contactSuccessView.classList.remove('hidden');
+        } else {
+          contactError.textContent = data.message || 'Có lỗi xảy ra, vui lòng thử lại.';
+          contactError.classList.remove('hidden');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
+
+      } catch (err) {
+        console.error('Lỗi khi gửi tin nhắn:', err);
+        contactError.textContent = 'Không thể kết nối tới server, vui lòng thử lại.';
+        contactError.classList.remove('hidden');
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+  });
+</script>

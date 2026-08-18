@@ -1,0 +1,71 @@
+<h1 class="font-heading text-3xl font-bold text-brown mb-8">Dashboard</h1>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+    <p class="text-gray-500 text-sm mb-1">Tổng sản phẩm</p>
+    <p class="font-heading text-3xl font-bold text-brown">{{totalProducts}}</p>
+  </div>
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+    <p class="text-gray-500 text-sm mb-1">Tổng khách hàng</p>
+    <p class="font-heading text-3xl font-bold text-brown">{{totalUsers}}</p>
+  </div>
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+    <p class="text-gray-500 text-sm mb-1">Tổng đơn hàng</p>
+    <p class="font-heading text-3xl font-bold text-brown">{{totalOrders}}</p>
+  </div>
+  <div class="bg-brown rounded-2xl p-6 shadow-sm">
+    <p class="text-cream/70 text-sm mb-1">Doanh thu</p>
+    <p id="revenue-total" class="font-heading text-3xl font-bold text-accent">{{formatVND totalRevenue}}</p>
+    <p id="revenue-trend" class="text-xs mt-2 text-cream/70">Đang tải xu hướng...</p>
+  </div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-10">
+  <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+    <div>
+      <h2 class="font-heading text-lg font-bold text-brown">Doanh thu theo thời gian</h2>
+      <p class="text-xs text-gray-500 mt-1">Mỗi ngày được chốt doanh thu để dễ theo dõi tăng/giảm</p>
+    </div>
+    <div class="flex bg-gray-50 rounded-lg p-1 gap-0.5">
+      <button data-range="today" class="revenue-range-btn px-3 py-1.5 text-sm rounded-md text-gray-500 transition-colors">Hôm nay</button>
+      <button data-range="7d" class="revenue-range-btn px-3 py-1.5 text-sm rounded-md text-gray-500 transition-colors">7 ngày</button>
+      <button data-range="30d" class="revenue-range-btn px-3 py-1.5 text-sm rounded-md text-gray-500 transition-colors">30 ngày</button>
+      <button data-range="3m" class="revenue-range-btn px-3 py-1.5 text-sm rounded-md text-gray-500 transition-colors">3 tháng</button>
+    </div>
+  </div>
+  <div class="relative h-72">
+    <canvas id="revenue-chart"></canvas>
+    <p id="revenue-empty" class="h-64 flex-col items-center justify-center text-sm text-gray-400 gap-2" style="display:none;">
+      Chưa có doanh thu trong khoảng này.
+    </p>
+  </div>
+</div>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+  <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+    <h2 class="font-heading text-lg font-bold text-brown">Đơn hàng gần đây</h2>
+    <a href="/admin/orders" class="text-sm text-accent font-medium hover:underline">Xem tất cả →</a>
+  </div>
+  <table class="w-full text-left text-sm">
+    <thead>
+      <tr class="bg-gray-50 text-gray-500 uppercase text-xs">
+        <th class="px-6 py-3 font-medium">Mã đơn</th>
+        <th class="px-6 py-3 font-medium">Khách hàng</th>
+        <th class="px-6 py-3 font-medium">Tổng tiền</th>
+        <th class="px-6 py-3 font-medium">Trạng thái</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {{#each recentOrders}}
+      <tr>
+        <td class="px-6 py-4 font-medium text-brown">#{{this.orderId}}</td>
+        <td class="px-6 py-4">{{this.customer.fullname}}</td>
+        <td class="px-6 py-4">{{formatVND this.total}}</td>
+        <td class="px-6 py-4">
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-accent/20 text-brown">{{this.status}}</span>
+        </td>
+      </tr>
+      {{else}}
+      <tr><td colspan="4" class="px-6 py-8 text-center text-gray-400">Chưa có đơn hàng nào.</td></tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

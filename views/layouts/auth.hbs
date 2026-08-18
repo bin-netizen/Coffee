@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{#if title}}{{title}} - {{/if}}Coffee</title>
+
+  <link rel="icon" href="/img/icon.svg" type="image/svg+xml" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#D4CCB2',
+            brown: '#4b2e2e',
+            accent: '#c8a27a'
+          },
+          fontFamily: {
+            heading: ['"Playfair Display"', 'serif'],
+            body: ['Poppins', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Poppins', sans-serif; }
+    h1, h2, h3, .font-heading { font-family: 'Playfair Display', serif; }
+  </style>
+</head>
+<body class="bg-black">
+  {{{body}}}
+</body>
+</html>

@@ -1,0 +1,30 @@
+<h1 class="font-heading text-3xl font-bold text-brown mb-8">Tin nhắn liên hệ</h1>
+
+<div class="space-y-4">
+  {{#each messages}}
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 {{#unless this.isRead}}border-l-4 border-l-accent{{/unless}}">
+    <div class="flex items-start justify-between mb-3">
+      <div>
+        <h3 class="font-heading font-bold text-brown">{{this.name}} <span class="text-gray-400 font-normal text-sm">· {{this.email}}</span></h3>
+        {{#if this.subject}}<p class="text-sm text-accent font-medium mt-1">{{this.subject}}</p>{{/if}}
+      </div>
+      {{#unless this.isRead}}
+        <span class="px-2.5 py-1 rounded-full text-xs font-medium bg-accent/20 text-brown flex-shrink-0">Chưa đọc</span>
+      {{/unless}}
+    </div>
+    <p class="text-sm text-gray-600 leading-relaxed mb-4">{{this.message}}</p>
+    <div class="flex items-center justify-between">
+      <span class="text-xs text-gray-400">{{this.createdAt}}</span>
+      {{#unless this.isRead}}
+      <form action="/admin/messages/{{this._id}}/read" method="POST">
+        <button type="submit" class="text-sm text-accent font-medium hover:underline">Đánh dấu đã đọc</button>
+      </form>
+      {{/unless}}
+    </div>
+  </div>
+  {{else}}
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center text-gray-400">
+    Chưa có tin nhắn liên hệ nào.
+  </div>
+  {{/each}}
+</div>

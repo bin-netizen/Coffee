@@ -4,13 +4,45 @@
   </div>
   <div class="product-info">
     <h2>{{product.name}}</h2>
-    <p class="price">{{product.price}} VND</p>
+    <p class="price">{{formatVND product.basePrice}}</p>
     <p class="description">
       {{product.name}} là một loại cà phê đặc biệt, được pha chế từ hạt cà phê nguyên chất,
       mang lại hương vị đậm đà và tinh tế. Thích hợp cho mọi thời điểm trong ngày.
     </p>
-    <button onclick="addToCart({{product.id}}, '{{product.name}}', {{product.price}})" class="btn">
+    <button type="button" class="btn" onclick="addProductToCart('{{product.productId}}')">
       Add to Cart
     </button>
   </div>
 </section>
+
+<script>
+  // Gọi thẳng /cart/add giống menu.hbs — server tự tính giá thật (calculateUnitPrice),
+  // KHÔNG gửi giá từ client lên như bản addToCart(id, name, price) cũ.
+  async function addProductToCart(productId) {
+    try {
+      const res = await fetch('/cart/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, quantity: 1 })
+      });
+
+      if (res.status === 401) {
+        const data = await res.json();
+        window.location.href = data.redirectUrl;
+        return;
+      }
+
+      const data = await res.json();
+
+      if (data.success) {
+        if (window.updateCartBadge) window.updateCartBadge(data.totalQuantity);
+        alert(data.message || 'Đã thêm vào giỏ hàng.');
+      } else {
+        alert(data.message || 'Có lỗi xảy ra.');
+      }
+    } catch (err) {
+      console.error('Lỗi khi thêm vào giỏ hàng:', err);
+      alert('Có lỗi xảy ra, vui lòng thử lại.');
+    }
+  }
+</script>
