@@ -102,6 +102,7 @@ app.use(require('./routes/checkout'));
 app.use(require('./routes/contactRoutes'));
 app.use(require('./routes/chatRoutes'));
 app.use(require('./routes/adminRoutes'));
+app.use(require('./routes/jobRoutes'));
 
 // ====== 404 Handler ======
 app.use((req, res) => {
