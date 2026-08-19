@@ -14,7 +14,7 @@
       <li><a href="/about" class="nav-link {{#eq activePage 'about'}}active{{/eq}} hover:text-accent transition-colors">About</a></li>
       <li><a href="/contact" class="nav-link {{#eq activePage 'contact'}}active{{/eq}} hover:text-accent transition-colors">Contact</a></li>
       <li>
-        <a href="/cart" class="nav-link {{#eq activePage 'cart'}}active{{/eq}} hover:text-accent transition-colors flex items-center gap-1">
+        <a href="/cart" id="cartIcon" class="nav-link {{#eq activePage 'cart'}}active{{/eq}} hover:text-accent transition-colors flex items-center gap-1">
           Cart
           <span id="cartBadge" class="bg-accent text-brown text-xs font-bold rounded-full px-1.5 py-0.5 min-w-[20px] text-center">
             {{#if (gt cartCount 10)}}10+{{else}}{{cartCount}}{{/if}}
@@ -23,7 +23,7 @@
       </li>
       <li>
         {{#if isLoggedIn}}
-          <a href="/orders" class="nav-link {{#eq activePage 'orders'}}active{{/eq}} hover:text-accent transition-colors">Đơn hàng</a>
+          <a href="/orders" class="nav-link {{#eq activePage 'orders'}}active{{/eq}} hover:text-accent transition-colors">Orders</a>
         {{/if}}
       </li>
       <li>
@@ -37,7 +37,7 @@
         {{#if isLoggedIn}}
           <form action="/logout" method="POST" class="inline">
             <button type="submit" class="bg-brown text-cream px-5 py-2 rounded-full hover:bg-accent hover:text-brown transition-all duration-300 shadow-md">
-              Đăng xuất
+              Log out
             </button>
           </form>
         {{else}}
@@ -64,7 +64,7 @@
     <li><a href="/contact" class="block py-2 hover:text-accent transition-colors">Contact</a></li>
     <li><a href="/cart" class="block py-2 hover:text-accent transition-colors">Cart</a></li>
     {{#if isLoggedIn}}
-      <li><a href="/orders" class="block py-2 hover:text-accent transition-colors">Đơn hàng</a></li>
+      <li><a href="/orders" class="block py-2 hover:text-accent transition-colors">Order</a></li>
     {{/if}}
     {{#if isAdmin}}
       <li><a href="/admin" class="block py-2 text-accent font-medium">⚙️ Admin</a></li>
@@ -72,7 +72,7 @@
     {{#if isLoggedIn}}
       <li>
         <form action="/logout" method="POST">
-          <button type="submit" class="block py-2 hover:text-accent transition-colors text-left w-full">Đăng xuất</button>
+          <button type="submit" class="block py-2 hover:text-accent transition-colors text-left w-full">Log out</button>
         </form>
       </li>
     {{else}}
@@ -92,4 +92,16 @@
       });
     }
   });
+
+  // Được gọi từ menu.hbs (modal "Thêm vào giỏ hàng" + nút quick-add trên card)
+  // sau khi /cart/add trả về thành công, để badge số lượng cập nhật ngay mà không cần reload trang.
+  window.updateCartBadge = function (count) {
+    const badge = document.getElementById('cartBadge');
+    if (!badge) return; // trang không có badge (VD: chưa login, hoặc layout khác) — bỏ qua an toàn
+    badge.textContent = count > 10 ? '10+' : count;
+    // Restart animate-bounce (Tailwind core utility) để badge nhấp nháy mỗi lần số thay đổi
+    badge.classList.remove('animate-bounce');
+    void badge.offsetWidth; // force reflow — trick bắt buộc để trigger lại animation
+    badge.classList.add('animate-bounce');
+  };
 </script>

@@ -1,13 +1,18 @@
 <style>
-  .filter-btn { transition: all 0.3s ease; }
-  .filter-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(75, 46, 46, 0.25); }
-  .filter-btn.active { background-color: #4b2e2e; color: #D4CCB2; }
-  .product-card { transition: transform 0.35s ease, box-shadow 0.35s ease; cursor: pointer; }
-  .product-card:hover { transform: scale(1.04) translateY(-6px); box-shadow: 0 20px 35px rgba(75, 46, 46, 0.25); }
+  .filter-btn { transition: all 0.3s ease; cursor: pointer; }
+  .filter-btn:hover:not(.active) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(75, 46, 46, 0.15); border-color: #4b2e2e; }
+  .filter-btn.active { background-color: #4b2e2e; color: #D4CCB2; border-color: #4b2e2e; box-shadow: 0 8px 20px rgba(75, 46, 46, 0.25); }
+
+  /* Transform ở đây được bỏ để tránh xung đột với các class Tailwind hover:-translate-y / hover:scale
+     đặt trực tiếp trên element .product-card — 2 nguồn transform cùng lúc sẽ cái này ghi đè cái kia. */
+  .product-card { cursor: pointer; }
+
   .add-cart-btn { transition: all 0.3s ease; }
-  .add-cart-btn:hover { background-color: #4b2e2e; letter-spacing: 0.5px; }
+  .add-cart-btn:hover { background-color: #4b2e2e; color: #D4CCB2; letter-spacing: 0.5px; }
+
   .fade-in { animation: fadeIn 0.8s ease both; }
   @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
   .option-pill { transition: all 0.2s ease; cursor: pointer; }
   .option-pill.selected { background-color: #4b2e2e; color: #D4CCB2; border-color: #4b2e2e; }
   .size-card { transition: all 0.2s ease; cursor: pointer; }
@@ -25,20 +30,21 @@
 
 <!-- ============ CATEGORY FILTER ============ -->
 <section class="max-w-7xl mx-auto px-6 py-12">
-  <div class="flex flex-wrap justify-center gap-4 mb-12" id="filterTabs">
-    <button class="filter-btn active px-6 py-2.5 rounded-full border-2 border-brown font-medium" data-filter="all">All</button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="coffee">Coffee</button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="tea">Tea</button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown font-medium hover:bg-brown hover:text-cream" data-filter="dessert">Dessert</button>
+  <div class="flex flex-wrap justify-center gap-3 mb-12" id="filterTabs">
+    <button class="filter-btn active px-6 py-2.5 rounded-full border-2 border-brown font-medium text-sm" data-filter="all">All</button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown/25 font-medium text-sm text-brown/70" data-filter="coffee">Coffee</button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown/25 font-medium text-sm text-brown/70" data-filter="tea">Tea</button>
+    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown/25 font-medium text-sm text-brown/70" data-filter="dessert">Dessert</button>
   </div>
 
   {{#if products.length}}
 <!-- ============ PRODUCT GRID (render động từ MongoDB) ============ -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="productGrid">
   {{#each products}}
-  <div class="product-card group relative bg-white/70 backdrop-blur-sm rounded-3xl overflow-hidden
-              border border-brown/10 shadow-md hover:shadow-2xl hover:-translate-y-1
-              transition-all duration-300 ease-out"
+  <div class="product-card group relative bg-white rounded-[28px] overflow-hidden
+              border border-brown/8 shadow-[0_4px_20px_-4px_rgba(75,46,46,0.15)]
+              hover:shadow-[0_20px_40px_-8px_rgba(75,46,46,0.25)] hover:-translate-y-1.5
+              transition-all duration-500 ease-out"
        data-category="{{this.category}}"
        data-id="{{this.productId}}"
        data-name="{{this.name}}"
@@ -47,25 +53,25 @@
 
     <!-- Badge -->
     {{#unless (eq this.badge 'none')}}
-      <span class="absolute top-4 left-4 z-10 text-xs font-bold px-3 py-1.5 rounded-full
-                    shadow-md backdrop-blur-sm
+      <span class="absolute top-4 left-4 z-10 text-[11px] font-bold px-3 py-1.5 rounded-full
+                    shadow-md backdrop-blur-sm tracking-wide
                     {{#if (eq this.badge 'best-seller')}}bg-accent/90 text-brown{{else}}bg-brown/90 text-cream{{/if}}">
         {{#if (eq this.badge 'best-seller')}}🔥 Best Seller{{else}}✨ New{{/if}}
       </span>
     {{/unless}}
 
     <!-- Image with zoom-on-hover -->
-    <div class="relative overflow-hidden aspect-[4/3]">
+    <div class="relative overflow-hidden aspect-[4/3] rounded-t-[28px]">
       <img src="{{this.image}}" alt="{{this.name}}"
-           class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110" />
-      <div class="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent"></div>
+           class="product-img w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
+      <div class="absolute inset-0 bg-gradient-to-t from-brown/30 via-transparent to-transparent"></div>
 
       <!-- Quick add button — hiện khi hover, gọn hơn nút full-width bên dưới -->
       <button type="button"
-              class="add-cart-btn absolute bottom-4 right-4 w-11 h-11 flex items-center justify-center
-                     bg-accent text-brown rounded-full shadow-lg
+              class="add-cart-btn hidden sm:flex absolute bottom-4 right-4 w-11 h-11 items-center justify-center
+                     bg-accent text-brown rounded-full shadow-lg ring-1 ring-white/40
                      opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0
-                     transition-all duration-300 hover:scale-110">
+                     transition-all duration-300 hover:scale-110 active:scale-90">
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m-10 0a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z" />
         </svg>
@@ -73,20 +79,21 @@
     </div>
 
     <!-- Content -->
-    <div class="p-5">
+    <div class="p-5 pt-4">
       {{#if this.flavor}}
-        <span class="inline-block text-[11px] uppercase tracking-wide text-brown/50 font-semibold mb-1">
+        <span class="inline-block text-[10.5px] uppercase tracking-[0.12em] text-brown/45 font-semibold mb-1.5">
           {{this.flavor}}
         </span>
       {{/if}}
 
-      <h3 class="font-heading text-lg font-semibold text-brown leading-snug mb-3">
+      <h3 class="font-heading text-[17px] font-semibold text-brown leading-snug mb-3">
         {{this.name}}
       </h3>
 
       <div class="flex items-center justify-between">
-        <span class="text-xl font-bold text-brown">{{formatVND this.basePrice}}</span>
-        <button class="add-cart-btn sm:hidden bg-accent text-brown px-4 py-2 rounded-full text-sm font-semibold shadow-md active:scale-95 transition-transform"
+        <span class="text-lg font-bold text-brown tracking-tight">{{formatVND this.basePrice}}</span>
+        <button class="add-cart-btn sm:hidden flex items-center gap-1.5 bg-accent text-brown px-4 py-2
+                       rounded-full text-sm font-semibold shadow-md active:scale-90 transition-transform"
                 type="button">
           Thêm
         </button>
@@ -372,6 +379,89 @@
         modalAddToCartBtn.textContent = originalText;
         modalAddToCartBtn.disabled = false;
       }
+    });
+
+    // ============ QUICK ADD-TO-CART (nút nhỏ trên card) + ANIMATION BAY VÀO GIỎ ============
+    // Nút "add-cart-btn" nằm TRONG mỗi card, mà cả card cũng có onclick mở modal (openProductModal).
+    // Nếu không stopPropagation ở đây, bấm nút này sẽ vừa gọi API vừa mở modal luôn — phải chặn từ
+    // chính element nút (target phase), không phải delegate lên #productGrid, vì lúc đó sự kiện
+    // bubble đã đi qua card (ancestor) trước rồi, stopPropagation ở tầng ngoài sẽ quá muộn.
+    function flyToCart(imgEl, targetEl) {
+      const imgRect = imgEl.getBoundingClientRect();
+      const targetRect = targetEl.getBoundingClientRect();
+
+      const clone = imgEl.cloneNode(true);
+      clone.style.position = 'fixed';
+      clone.style.top = imgRect.top + 'px';
+      clone.style.left = imgRect.left + 'px';
+      clone.style.width = imgRect.width + 'px';
+      clone.style.height = imgRect.height + 'px';
+      clone.style.borderRadius = '16px';
+      clone.style.zIndex = '9999';
+      clone.style.pointerEvents = 'none';
+      clone.style.transition = 'all 0.7s cubic-bezier(0.55, 0, 0.1, 1)';
+      document.body.appendChild(clone);
+
+      // Bắt buộc đổi style ở frame kế tiếp, không thì browser không nhận ra đây là 1 transition
+      requestAnimationFrame(function () {
+        clone.style.top = (targetRect.top + targetRect.height / 2) + 'px';
+        clone.style.left = (targetRect.left + targetRect.width / 2) + 'px';
+        clone.style.width = '0px';
+        clone.style.height = '0px';
+        clone.style.opacity = '0.3';
+      });
+
+      clone.addEventListener('transitionend', function () {
+        clone.remove();
+        targetEl.classList.add('scale-125');
+        setTimeout(function () { targetEl.classList.remove('scale-125'); }, 250);
+      }, { once: true });
+    }
+
+    document.querySelectorAll('.add-cart-btn').forEach(function (btn) {
+      btn.addEventListener('click', async function (e) {
+        e.stopPropagation();
+
+        const card = btn.closest('.product-card');
+        const img = card.querySelector('.product-img');
+        // TODO: đổi selector này đúng với icon giỏ hàng thật trong header/layout của bạn
+        const cartIcon = document.querySelector('#cartIcon, [data-cart-icon]');
+        if (cartIcon) flyToCart(img, cartIcon);
+
+        btn.disabled = true;
+
+        try {
+          const res = await fetch('/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              productId: card.dataset.id,
+              size: 'S', ice: 'normal', sugarLevel: 'normal',
+              toppings: [], note: '', quantity: 1
+            })
+          });
+
+          if (res.status === 401) {
+            const data = await res.json();
+            window.location.href = data.redirectUrl;
+            return;
+          }
+
+          const data = await res.json();
+
+          // Cập nhật số lượng LẤY TỪ SERVER (data.totalQuantity), không tự cộng ở client —
+          // để tránh badge hiển thị sai nếu request add-cart thật ra bị lỗi.
+          if (data.success) {
+            if (window.updateCartBadge) window.updateCartBadge(data.totalQuantity);
+          } else {
+            alert(data.message || 'Có lỗi xảy ra.');
+          }
+        } catch (err) {
+          console.error('Lỗi khi thêm nhanh vào giỏ hàng:', err);
+        } finally {
+          btn.disabled = false;
+        }
+      });
     });
   });
 </script>

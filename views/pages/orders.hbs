@@ -12,17 +12,16 @@
 </style>
 
 <!-- ============ HERO SECTION ============ -->
-<!-- ============ HERO SECTION ============ -->
-<section class="hero-bg relative h-screen min-h-[560px] max-h-[880px] flex items-end justify-center text-center bg-cover bg-center overflow-hidden pb-24 md:pb-28" style="background-image: url('/img/order.jpg');">
-  <!-- Vignette chỉ ở dải dưới cùng, đúng vùng chữ + mũi tên — phần ảnh còn lại giữ nguyên, không bị che -->
-  <div class="absolute inset-x-0 bottom-0 h-72 md:h-80" style="background: linear-gradient(to top, rgba(43,26,20,0.78) 0%, rgba(43,26,20,0.4) 55%, transparent 100%);"></div>
+<section class="hero-bg relative h-screen min-h-[560px] max-h-[880px] flex items-start justify-center text-center bg-cover bg-center overflow-hidden pt-32 md:pt-40" style="background-image: url('/img/order.jpg');">
+  <!-- Vignette chỉ ở dải trên cùng, đúng vùng chữ — phần ảnh còn lại giữ nguyên, không bị che -->
+  <div class="absolute inset-x-0 top-0 h-72 md:h-80" style="background: linear-gradient(to bottom, rgba(43,26,20,0.78) 0%, rgba(43,26,20,0.4) 55%, transparent 100%);"></div>
 
   <div class="relative z-10 px-6 max-w-3xl fade-up">
-    <h1 class="font-heading text-5xl md:text-7xl font-bold text-cream mt-6 mb-6 leading-[1.05] drop-shadow-[0_4px_20px_rgba(0,0,0,0.45)]">
+    <h1 class="font-heading text-6xl md:text-7xl font-bold text-cream mt-6 mb-6 leading-[1.05] drop-shadow-[0_4px_20px_rgba(0,0,0,0.45)]">
       Đơn hàng của bạn
     </h1>
     <p class="text-cream/95 text-base md:text-xl font-light tracking-wide drop-shadow-md">
-      Quản lý đơn hàng, theo dõi trạng thái và liên hệ cửa hàng khi cần thiết.
+      Quản lý đơn hàng, theo dõi trạng thái, liên hệ cửa hàng khi cần thiết.
     </p>
   </div>
 
@@ -192,5 +191,3 @@
     });
   });
 </script>
-netstat -ano | findstr :3000
-taskkill /PID <PID> /F

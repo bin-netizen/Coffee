@@ -129,14 +129,3 @@ COFFEEWEB/
 ├── package.json
 ├── PROJECT_STRUCTURE.md
 └── README.md
-
-## Ghi chú / điểm chưa xác nhận
-- Chưa rõ nội dung chi tiết bên trong từng route file (map route nào gọi controller nào).
-- Chưa rõ `public/css/` và `public/img/` có file gì bên trong.
-- Chưa rõ các field cụ thể trong từng model (`Cart.js`, `Order.js`, `Product.js`, `User.js`, `ContactMessage.js`).
-
-## Cách dùng file này
-Khi mở conversation mới với AI assistant và cần hỗ trợ nâng cấp project:
-1. Copy toàn bộ nội dung file này.
-2. Paste vào đầu tin nhắn, kèm câu hỏi/yêu cầu cụ thể.
-3. Nếu file/thư mục nào không còn đúng, sửa lại trước khi paste.
