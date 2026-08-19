@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
-const { MongoStore } = require('connect-mongo');
+const MongoStore = require('connect-mongo');
 const { engine } = require('express-handlebars');
 const connectDB = require('./config/db');
 const { getCartQuantityByUserId } = require('./controllers/cartController');
@@ -12,6 +12,15 @@ const { showMenuPage } = require('./controllers/menuController');
 require('./jobs/closeDailyRevenue');
 
 const app = express();
+
+// ====== Lưới an toàn: không để 1 lỗi lẻ làm sập cả server ======
+// (Chỉ nên dùng để KHÔNG crash — vẫn phải fix nguyên nhân gốc từng lỗi log ra đây)
+process.on('unhandledRejection', (reason) => {
+  console.error('🔴 Unhandled Promise Rejection:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('🔴 Uncaught Exception:', err);
+});
 
 (async () => {
   const connected = await connectDB();
@@ -27,9 +36,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ====== Khởi tạo session store ======
 let sessionStore;
 
-if (process.env.MONGO_URI) {
+if (process.env.MONGODB_URI) {
   try {
-    sessionStore = MongoStore.create({ mongoUrl: process.env.MONGO_URI });
+    sessionStore = MongoStore.create({ mongoUrl: process.env.MONGODB_URI });
   } catch (error) {
     console.error('⚠️ Mongo session store failed to initialize, falling back to memory store:', error.message);
   }
@@ -88,7 +97,16 @@ app.use(async (req, res, next) => {
   res.locals.isLoggedIn = !!req.session.userId;
   res.locals.userFullname = req.session.userFullname || null;
   res.locals.isAdmin = req.session.userRole === 'admin';
-  res.locals.cartCount = await getCartQuantityByUserId(req.session.userId);
+
+  try {
+    res.locals.cartCount = req.session.userId
+      ? await getCartQuantityByUserId(req.session.userId)
+      : 0;
+  } catch (error) {
+    console.error('⚠️ Lỗi khi lấy cartCount:', error.message);
+    res.locals.cartCount = 0; // fallback an toàn, không làm crash cả app
+  }
+
   next();
 });
 
