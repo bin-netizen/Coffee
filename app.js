@@ -95,6 +95,7 @@ app.get('/menu', showMenuPage);
 app.get('/about', (req, res) => res.render('about', { activePage: 'about' }));
 app.get('/contact', (req, res) => res.render('contact', { activePage: 'contact' }));
 
+app.use(require('./routes/jobRoutes'));
 app.use(require('./routes/authRoutes'));
 app.use(require('./routes/cartRoutes'));
 app.use(require('./routes/orderRoutes'));
@@ -102,8 +103,6 @@ app.use(require('./routes/checkout'));
 app.use(require('./routes/contactRoutes'));
 app.use(require('./routes/chatRoutes'));
 app.use(require('./routes/adminRoutes'));
-app.use(require('./routes/jobRoutes'));
-
 // ====== 404 Handler ======
 app.use((req, res) => {
   res.status(404).render('404', { activePage: '' });
