@@ -80,6 +80,9 @@ app.engine('hbs', engine({
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views/pages'));
 
+// app.js — đăng ký TRƯỚC các middleware auth-session toàn cục
+app.use('/api', require('./routes/cron'));  // route độc lập
+
 // ====== Middleware toàn cục ======
 app.use(async (req, res, next) => {
   res.locals.isLoggedIn = !!req.session.userId;
@@ -199,8 +202,23 @@ io.use((socket, next) => {
 const { initChatSocket } = require('./socket/chatSocket');
 initChatSocket(io);
 
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+const PORT = Number(process.env.PORT) || 3000;
+
+function startServer(port) {
+  server.once('error', (error) => {
+    if (error.code === 'EADDRINUSE') {
+      console.warn(`⚠️ Port ${port} đang được sử dụng, chuyển sang port ${port + 1}.`);
+      startServer(port + 1);
+      return;
+    }
+
+    throw error;
+  });
+
+  server.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+}
+
+startServer(PORT);
 
 // ====== Graceful shutdown ======
 async function gracefulShutdown(signal) {
