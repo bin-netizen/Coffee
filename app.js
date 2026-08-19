@@ -36,15 +36,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ====== Khởi tạo session store ======
 let sessionStore;
 
-if (process.env.MONGODB_URI) {
+if (process.env.MONGO_URI) {
+  console.log('✅ MONGO_URI được tìm thấy, đang khởi tạo Mongo session store...');
   try {
-    sessionStore = MongoStore.create({ mongoUrl: process.env.MONGODB_URI });
+    sessionStore = MongoStore.create({ mongoUrl: process.env.MONGO_URI });
   } catch (error) {
     console.error('⚠️ Mongo session store failed to initialize, falling back to memory store:', error.message);
   }
 }
 
 if (!sessionStore) {
+  console.log('❌ process.env.MONGO_URI không tồn tại hoặc rỗng — kiểm tra lại tên biến trên Render.');
   const MemoryStore = session.MemoryStore || require('express-session').MemoryStore;
   sessionStore = new MemoryStore();
   console.log('⚠️ Using in-memory session store as fallback.');
