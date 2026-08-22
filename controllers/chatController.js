@@ -119,4 +119,36 @@ function showAdminChatPage(req, res) {
   });
 }
 
-module.exports = { getMyConversation, listConversations, getConversationMessages, showAdminChatPage };
+async function searchUsers(req, res) {
+  try {
+    const q = (req.query.q || '').trim();
+
+    if (!q) {
+      return res.json({ success: true, users: [] });
+    }
+
+    const users = await User.find({
+      role: 'customer', 
+      $or: [
+        { fullname: { $regex: q, $options: 'i' } },
+        { email: { $regex: q, $options: 'i' } }
+      ]
+    })
+      .select('_id fullname email')
+      .limit(20);
+
+    return res.json({
+      success: true,
+      users: users.map((u) => ({
+        userId: u._id.toString(),
+        fullname: u.fullname,
+        email: u.email
+      }))
+    });
+  } catch (error) {
+    console.error('[Chat] Lỗi tìm kiếm user:', error);
+    return res.status(500).json({ success: false, message: 'Có lỗi xảy ra khi tìm kiếm.' });
+  }
+}
+
+module.exports = { getMyConversation, listConversations, getConversationMessages, showAdminChatPage, searchUsers };

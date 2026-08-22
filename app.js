@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const path = require('path');
 const session = require('express-session');
-const MongoStore = require('connect-mongo');
+const { MongoStore } = require('connect-mongo');
 const { engine } = require('express-handlebars');
 const connectDB = require('./config/db');
 const { getCartQuantityByUserId } = require('./controllers/cartController');
@@ -46,7 +46,9 @@ if (process.env.MONGO_URI) {
 }
 
 if (!sessionStore) {
-  console.log('❌ process.env.MONGO_URI không tồn tại hoặc rỗng — kiểm tra lại tên biến trên Render.');
+  if (!process.env.MONGO_URI) {
+    console.log('❌ process.env.MONGO_URI không tồn tại hoặc rỗng — kiểm tra lại tên biến trên Render.');
+  }
   const MemoryStore = session.MemoryStore || require('express-session').MemoryStore;
   sessionStore = new MemoryStore();
   console.log('⚠️ Using in-memory session store as fallback.');

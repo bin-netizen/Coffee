@@ -3,6 +3,7 @@ const revenueController = require('../controllers/revenueController');
 const discountController = require('../controllers/discountController');
 const toppingController = require('../controllers/toppingController');
 const chatController = require('../controllers/chatController');
+const statsController = require('../controllers/statsController');
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
@@ -37,6 +38,9 @@ router.post('/admin/products/:id/restore', adminController.restoreProduct);
 router.get('/admin/orders', adminController.listOrders);
 router.post('/admin/orders/:id/refund', adminController.refundOrder);
 router.post('/admin/orders/:id/status', adminController.updateOrderStatus);
+
+// ---------- Thống kê bán hàng theo ngày ----------
+router.get('/admin/stats', statsController.showDailyStats);
 
 // ---------- Users ----------
 router.get('/admin/users', adminController.listUsers);

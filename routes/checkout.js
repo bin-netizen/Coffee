@@ -39,10 +39,15 @@ router.post('/api/checkout', isAuthenticated, async (req, res) => {
     }
 
     // ✅ Build lại items từ dữ liệu server, KHÔNG copy nguyên item client gửi
+    // Giữ lại productId/size/toppings (đã có sẵn cấu trúc chuẩn trong Cart) để phục vụ
+    // thống kê bán hàng theo sản phẩm/size/topping sau này — không cần parse chuỗi name.
     const orderItems = validItems.map((item) => ({
       name: item.name,
       price: item.unitPrice,   // giá đã được tính đúng ở bước addToCart (server-side)
-      quantity: item.quantity
+      quantity: item.quantity,
+      productId: item.productId,
+      size: item.size,
+      toppings: item.toppings
     }));
 
     const subtotal = cart.getSubtotal();

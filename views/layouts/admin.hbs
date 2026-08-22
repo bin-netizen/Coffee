@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin - CoffeeWeb</title>
+  <title>Admin - Coffee</title>
   <link rel="icon" href="/img/icon.svg" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -34,8 +34,8 @@
     <!-- ============ SIDEBAR ============ -->
     <aside class="w-64 bg-brown text-cream flex-shrink-0 flex flex-col">
       <div class="px-6 py-6 border-b border-cream/10 flex items-center gap-3">
-        <img src="/img/icon.svg" alt="CoffeeWeb" class="h-8 w-8" />
-        <span class="font-heading text-lg font-bold">CoffeeWeb Admin</span>
+        <img src="/img/icon.svg" alt="Coffee" class="h-8 w-8" />
+        <span class="font-heading text-lg font-bold">Coffee Admin</span>
       </div>
 
       <nav class="flex-1 px-4 py-6 space-y-1">
@@ -50,6 +50,10 @@
         <a href="/admin/orders" class="sidebar-link {{#eq activeAdminPage 'orders'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
           Đơn hàng
+        </a>
+        <a href="/admin/stats" class="sidebar-link {{#eq activeAdminPage 'stats'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3v18h18M9 17V9m4 8V5m4 12v-6" /></svg>
+          Thống kê
         </a>
         <a href="/admin/users" class="sidebar-link {{#eq activeAdminPage 'users'}}active{{/eq}} flex items-center gap-3 px-4 py-3 rounded-lg text-sm">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-2.13a4 4 0 100-8 4 4 0 000 8zm6 0a4 4 0 10-3.998-4.002" /></svg>

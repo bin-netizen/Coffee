@@ -7,7 +7,18 @@ const orderItemSchema = new mongoose.Schema({
     type: Number, required: true, min: 0,
     validate: { validator: Number.isInteger, message: 'Giá item phải là số nguyên VND' }
   },
-  quantity: { type: Number, required: true, min: 1 }
+  quantity: { type: Number, required: true, min: 1 },
+
+  // ── Thêm mới: phục vụ thống kê bán hàng theo sản phẩm/size/topping (không hard-code) ──
+  // Lưu ý: đơn hàng tạo TRƯỚC khi thêm field này sẽ có giá trị null/rỗng ở các field dưới,
+  // vì tại thời điểm đó checkout.js chưa lưu lại — không ảnh hưởng gì tới đơn hàng cũ.
+  productId: { type: String, default: null }, // khớp Product.productId (slug), không phải _id
+  size: { type: String, default: null }, // 'S' | 'M' | 'L' | null (dessert không có size)
+  toppings: [{
+    toppingId: { type: mongoose.Schema.Types.ObjectId, ref: 'Topping' },
+    name: { type: String },
+    price: { type: Number }
+  }]
 });
 
 const orderSchema = new mongoose.Schema(

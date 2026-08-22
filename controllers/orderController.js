@@ -19,16 +19,12 @@ const STATUS_COLORS = {
 
 const PAYMENT_LABELS = {
   cod: 'Thanh toán khi nhận hàng (COD)',
-  bank: 'Chuyển khoản ngân hàng'
+  bank: 'Đặt trước đến lấy'
 };
 
 // ---------- GET /orders (trang "Đơn hàng của tôi") ----------
 async function listMyOrders(req, res) {
   try {
-    // .lean() -> trả về plain JS object thay vì Mongoose Document.
-    // Bắt buộc cần khi nhồi lại document (đặc biệt mảng subdocument như "items")
-    // vào object literal mới rồi render qua Handlebars — nếu không, các field
-    // bên trong mảng con dễ bị "biến mất" khi template cố duyệt qua chúng.
     const orders = await Order.find({ user: req.session.userId })
       .sort({ createdAt: -1 })
       .lean();
@@ -40,8 +36,6 @@ async function listMyOrders(req, res) {
       statusLabel: STATUS_LABELS[order.status] || order.status,
       statusColor: STATUS_COLORS[order.status] || 'bg-gray-100 text-gray-700',
       paymentLabel: PAYMENT_LABELS[order.paymentMethod] || order.paymentMethod,
-      // Tính sẵn lineTotal cho từng món ở server — tránh phải nhân trong template (Handlebars
-      // không có phép nhân, đây cũng là lý do cột "Thành tiền" cũ bị lặp y hệt "Đơn giá").
       items: order.items.map((item) => ({
         name: item.name,
         quantity: item.quantity,

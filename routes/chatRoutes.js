@@ -12,4 +12,7 @@ router.get('/chat/history', isAuthenticated, chatController.getMyConversation);
 router.get('/admin/chat/conversations', isAuthenticated, isAdmin, chatController.listConversations);
 router.get('/admin/chat/conversations/:userId', isAuthenticated, isAdmin, chatController.getConversationMessages);
 
+// Admin: tìm khách hàng để chủ động nhắn tin mới (chưa từng chat trước đó)
+router.get('/admin/chat/users/search', isAuthenticated, isAdmin, chatController.searchUsers);
+
 module.exports = router;

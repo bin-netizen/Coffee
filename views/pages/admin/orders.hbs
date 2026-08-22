@@ -16,10 +16,12 @@
         <th class="px-6 py-3 font-medium">Mã đơn</th>
         <th class="px-6 py-3 font-medium">Khách hàng</th>
         <th class="px-6 py-3 font-medium">SĐT</th>
+        <th class="px-6 py-3 font-medium">Số món</th>
         <th class="px-6 py-3 font-medium">Tổng tiền</th>
         <th class="px-6 py-3 font-medium">Thanh toán</th>
         <th class="px-6 py-3 font-medium">Trạng thái</th>
         <th class="px-6 py-3 font-medium">Hoàn tiền</th>
+        <th class="px-6 py-3 font-medium">Chi tiết</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-gray-100">
@@ -28,6 +30,7 @@
         <td class="px-6 py-4 font-medium text-brown">#{{this.orderId}}</td>
         <td class="px-6 py-4">{{this.customer.fullname}}</td>
         <td class="px-6 py-4">{{this.customer.phone}}</td>
+        <td class="px-6 py-4 text-center">{{this.items.length}}</td>
         <td class="px-6 py-4 font-medium">{{formatVND this.total}}</td>        
         <td class="px-6 py-4 capitalize">{{this.paymentMethod}}</td>
         <td class="px-6 py-4">
@@ -57,10 +60,107 @@
             {{/eq}}
           {{/if}}
         </td>
+        <td class="px-6 py-4">
+          <button type="button" onclick="document.getElementById('orderModal-{{this._id}}').classList.remove('hidden')"
+            class="px-3 py-1.5 rounded-lg border border-brown/30 text-brown text-xs font-medium hover:bg-brown hover:text-cream transition-colors">
+            Xem chi tiết
+          </button>
+        </td>
       </tr>
       {{else}}
-      <tr><td colspan="7" class="px-6 py-8 text-center text-gray-400">Không có đơn hàng nào.</td></tr>
+      <tr><td colspan="9" class="px-6 py-8 text-center text-gray-400">Không có đơn hàng nào.</td></tr>
       {{/each}}
     </tbody>
   </table>
 </div>
+
+<!-- ============ MODALS CHI TIẾT ĐƠN HÀNG (1 modal / đơn) ============ -->
+{{#each orders}}
+<div id="orderModal-{{this._id}}" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4 py-8">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-full overflow-y-auto">
+
+    <div class="sticky top-0 bg-white px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h2 class="font-heading text-lg font-bold text-brown">Đơn hàng #{{this.orderId}}</h2>
+      <button type="button" onclick="document.getElementById('orderModal-{{this._id}}').classList.add('hidden')"
+        class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+    </div>
+
+    <div class="p-6 space-y-6">
+
+      <!-- Thông tin người đặt -->
+      <div>
+        <h3 class="text-xs font-semibold uppercase text-gray-400 mb-2">Thông tin người đặt</h3>
+        <div class="bg-gray-50 rounded-xl p-4 space-y-1.5 text-sm">
+          <p><span class="text-gray-500">Họ tên:</span> <span class="font-medium text-brown">{{this.customer.fullname}}</span></p>
+          <p><span class="text-gray-500">Số điện thoại:</span> <span class="font-medium text-brown">{{this.customer.phone}}</span></p>
+          <p><span class="text-gray-500">Email:</span>
+            {{#if this.customerEmail}}
+              <span class="font-medium text-brown">{{this.customerEmail}}</span>
+            {{else}}
+              <span class="text-gray-400 italic">Không có</span>
+            {{/if}}
+          </p>
+          <p><span class="text-gray-500">Địa chỉ giao hàng:</span> <span class="font-medium text-brown">{{this.customer.address}}</span></p>
+          <p><span class="text-gray-500">Đặt lúc:</span> <span class="font-medium text-brown">{{this.createdAtFormatted}}</span></p>
+        </div>
+      </div>
+
+      <!-- Danh sách món -->
+      <div>
+        <h3 class="text-xs font-semibold uppercase text-gray-400 mb-2">Danh sách món ({{this.items.length}})</h3>
+        <div class="border border-gray-100 rounded-xl overflow-hidden">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 text-gray-500 text-xs uppercase">
+                <th class="px-4 py-2 text-left font-medium">Món</th>
+                <th class="px-4 py-2 text-center font-medium">SL</th>
+                <th class="px-4 py-2 text-right font-medium">Đơn giá</th>
+                <th class="px-4 py-2 text-right font-medium">Thành tiền</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              {{#each this.items}}
+              <tr>
+                <td class="px-4 py-2 text-brown">{{this.name}}</td>
+                <td class="px-4 py-2 text-center">{{this.quantity}}</td>
+                <td class="px-4 py-2 text-right">{{formatVND this.price}}</td>
+                <td class="px-4 py-2 text-right font-medium">{{formatVND this.lineTotal}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tổng kết tiền -->
+      <div>
+        <h3 class="text-xs font-semibold uppercase text-gray-400 mb-2">Tổng kết</h3>
+        <div class="bg-gray-50 rounded-xl p-4 space-y-1.5 text-sm">
+          <div class="flex justify-between"><span class="text-gray-500">Tạm tính</span><span>{{formatVND this.subtotal}}</span></div>
+          <div class="flex justify-between"><span class="text-gray-500">Phí ship</span><span>{{formatVND this.shipping}}</span></div>
+          <div class="flex justify-between">
+            <span class="text-gray-500">Giảm giá</span>
+            {{#if this.discount}}
+              <span class="text-red-500">-{{formatVND this.discount}}</span>
+            {{else}}
+              <span class="text-gray-400">Không áp dụng</span>
+            {{/if}}
+          </div>
+          <div class="flex justify-between pt-2 mt-2 border-t border-gray-200 font-bold text-brown text-base">
+            <span>Tổng cộng</span><span>{{formatVND this.total}}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trạng thái & thanh toán -->
+      <div class="flex flex-wrap gap-2 text-xs">
+        <span class="px-3 py-1.5 rounded-full bg-gray-100 text-gray-600">Thanh toán: <span class="font-medium capitalize">{{this.paymentMethod}}</span></span>
+        {{#if this.isRefunded}}
+          <span class="px-3 py-1.5 rounded-full bg-red-50 text-red-600 font-medium">Đã hoàn tiền</span>
+        {{/if}}
+      </div>
+
+    </div>
+  </div>
+</div>
+{{/each}}

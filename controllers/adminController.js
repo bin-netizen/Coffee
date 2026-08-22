@@ -134,12 +134,33 @@ async function listOrders(req, res) {
     const statusFilter = req.query.status;
     const query = statusFilter ? { status: statusFilter } : {};
 
-    const orders = await Order.find(query).sort({ createdAt: -1 }).lean();
+    const orders = await Order.find(query)
+      .sort({ createdAt: -1 })
+      .populate('user', 'email') // cần để hiện email khách trong modal chi tiết
+      .lean();
+
+    // Tính sẵn lineTotal cho từng món (Handlebars không có phép nhân),
+    // và tách email ra field riêng cho dễ dùng trong template.
+    const formatted = orders.map((order) => ({
+      ...order,
+      customerEmail: order.user && order.user.email ? order.user.email : null,
+      items: (order.items || []).map((item) => ({
+        ...item,
+        lineTotal: item.price * item.quantity
+      })),
+      createdAtFormatted: new Date(order.createdAt).toLocaleString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
+    }));
 
     res.render('admin/orders', {
       layout: 'admin',
       activeAdminPage: 'orders',
-      orders,
+      orders: formatted,
       currentFilter: statusFilter || 'all'
     });
 

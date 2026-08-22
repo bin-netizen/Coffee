@@ -23,18 +23,25 @@
   .qty-btn:hover { background-color: #4b2e2e; color: #D4CCB2; }
 </style>
 
-<section class="relative w-full h-auto mt-[70px]">
+<!-- Banner ảnh tĩnh: chỉ hiện từ tablet trở lên, vì chữ trong ảnh quá nhỏ khi co lại trên điện thoại -->
+<section class="relative w-full h-auto mt-[70px] hidden sm:block">
   <img src="/img/menu.jpg" alt="Menu" class="w-full h-auto object-contain">
+</section>
+
+<!-- Tiêu đề gọn thay thế banner trên điện thoại -->
+<section class="sm:hidden mt-[70px] px-6 pt-8 pb-2 text-center">
+  <h1 class="font-heading text-2xl font-bold text-brown">☕ Coffee Menu</h1>
+  <p class="text-brown/60 text-xs mt-1">Chọn danh mục bên dưới để xem menu đầy đủ</p>
 </section>
 
 
 <!-- ============ CATEGORY FILTER ============ -->
 <section class="max-w-7xl mx-auto px-6 py-12">
-  <div class="flex flex-wrap justify-center gap-3 mb-12" id="filterTabs">
-    <button class="filter-btn active px-6 py-2.5 rounded-full border-2 border-brown font-medium text-sm" data-filter="all">All</button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown/25 font-medium text-sm text-brown/70" data-filter="coffee">Coffee</button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown/25 font-medium text-sm text-brown/70" data-filter="tea">Tea</button>
-    <button class="filter-btn px-6 py-2.5 rounded-full border-2 border-brown/25 font-medium text-sm text-brown/70" data-filter="dessert">Dessert</button>
+  <div class="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-12" id="filterTabs">
+    <button class="filter-btn active px-4 sm:px-6 py-2 sm:py-2.5 rounded-full border-2 border-brown font-medium text-xs sm:text-sm" data-filter="all">All</button>
+    <button class="filter-btn px-4 sm:px-6 py-2 sm:py-2.5 rounded-full border-2 border-brown/25 font-medium text-xs sm:text-sm text-brown/70" data-filter="coffee">Coffee</button>
+    <button class="filter-btn px-4 sm:px-6 py-2 sm:py-2.5 rounded-full border-2 border-brown/25 font-medium text-xs sm:text-sm text-brown/70" data-filter="tea">Tea</button>
+    <button class="filter-btn px-4 sm:px-6 py-2 sm:py-2.5 rounded-full border-2 border-brown/25 font-medium text-xs sm:text-sm text-brown/70" data-filter="dessert">Dessert</button>
   </div>
 
   {{#if products.length}}
